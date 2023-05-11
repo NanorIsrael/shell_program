@@ -20,11 +20,20 @@ typedef struct global_data {
     char *arguments[MAX_ARGUMENTS];
 } g_data;
 
+typedef struct builtins {
+    char *name;
+    int (*func)(g_data *);
+} csh_builtin;
+
 
 // parser.c
 void parseCommand(char *command, char **arg);
-ssize_t exec_cmd(g_data info, char *path);
-void printPathDirectories();
-char *_getenv(const char *name, char **_environ);
 char* findCommandPath(const char* command);
+void printPathDirectories();
+
 int is_cmd(char *path);
+void cmd_handler(g_data info);
+ssize_t exec_cmd(g_data info, char *path);
+
+
+char *_getenv(const char *name, char **_environ);

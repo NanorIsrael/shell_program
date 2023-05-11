@@ -18,14 +18,14 @@
 #define MAX_ARGUMENTS 10
 
 typedef struct global_data {
-    char *av;
+    char *file_name;
     char command[MAX_COMMAND_LENGTH];
     char *arguments[MAX_ARGUMENTS];
 } g_data;
 
 typedef struct builtins {
     char *name;
-    int (*func)(g_data *);
+    int (*handler)(g_data *);
 } csh_builtin;
 
 
@@ -39,3 +39,7 @@ void cmd_handler(g_data *info);
 
 
 char *_getenv(const char *name, char **_environ);
+
+
+// builtins
+int exit_func();

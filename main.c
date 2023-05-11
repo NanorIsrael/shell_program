@@ -23,7 +23,7 @@ void p_error(g_data *info)
 
 	ver_str = "haibo";
     // aux_itoa(datash->counter);
-	length = strlen(info->av) + strlen(ver_str);
+	length = strlen(info->file_name) + strlen(ver_str);
 	length += strlen(info->arguments[0]) + 16;
 	error = malloc(sizeof(char) * (length + 1));
 	if (error == 0)
@@ -32,7 +32,7 @@ void p_error(g_data *info)
 		// free(ver_str);
 		// return (NULL);
 	}
-	strcpy(error, info->av);
+	strcpy(error, info->file_name);
 	strcat(error, ": ");
 	strcat(error, ver_str);
 	strcat(error, ": ");
@@ -51,7 +51,7 @@ int main(int ac, char **av, char **env)
     ac++;
     // *av++;
 
-    info.av = av[0];
+    info.file_name = av[0];
 
     // To Do:
     // function to set_data(info)
@@ -79,7 +79,7 @@ ssize_t exec_cmd(g_data *info, char *path)
         execve(path, info->arguments, NULL);
         // execvp(path, info.arguments);
 
-        perror(&(info->av[0]));
+        perror(info->file_name);
         exit(EXIT_FAILURE);
         return (-1);
     }
@@ -119,7 +119,27 @@ int is_cmd(char *path)
 	return (0);
 }
 
-// ssize_t handle_builtins(g_data *)
+ssize_t handle_builtins(g_data *info)
+{
+    int idx, result = -1;
+    csh_builtin cbuiltins[] = {
+        {"exit", exit_func}, 
+        {NULL, NULL}
+    };
+
+    for (idx = 0; cbuiltins[idx].name; idx++)
+    {
+        if (strcmp(cbuiltins[idx].name, info->command) == 0)
+        {
+            // todo some counter
+            result = cbuiltins[idx].handler(info);
+            break;
+        }
+
+    }
+
+    return (result);
+}
 
 void cmd_handler(g_data *info)
 {
@@ -146,28 +166,41 @@ void cmd_handler(g_data *info)
 
 
         // implement builtins here
-        char* commandPath =  findCommandPath(info->command);
+        ret = handle_builtins(info);
+        if (ret == -1) 
+        {
+            char* commandPath =  findCommandPath(info->command);
 
-        if (commandPath != NULL) {
-            printf("Command path: %s\n", commandPath);
-            exec_cmd(info, commandPath);
-            
-            free(commandPath);
-        } else {
-            if (info->arguments[0][0] == '/' && is_cmd(info->arguments[0]) == 1)
-            {
-                exec_cmd(info, info->arguments[0]);
+            if (commandPath != NULL) {
+                printf("Command path: %s\n", commandPath);
+                exec_cmd(info, commandPath);
+                
                 free(commandPath);
             }
-            else
-                // printf("Command not found in any path.\n");
-                // print_error(info, "Command not found in any path.");
-                p_error(info);
+            else {
+                if (info->arguments[0][0] == '/' && is_cmd(info->arguments[0]) == 1)
+                {
+                    exec_cmd(info, info->arguments[0]);
+                    free(commandPath);
+                }
+                else
+                {
+                    // printf("Command not found in any path.\n");
+                    // print_error(info, "Command not found in any path.");
+                    p_error(info);
+                }   
+            }
         }
            atexit(report_mem_leak);
 
-        // todo: handle builtins
     // }
 }
 
+int exit_func(g_data *info)
+{
+    // char *leak_test;
+    // leak_test = malloc(sizeof(char));
 
+    printf("Hello world\n");
+    return (0);
+}

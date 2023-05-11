@@ -11,6 +11,9 @@
 // stat
 #include <sys/stat.h>
 
+// leak detector
+#include "leak_detector_c.h"
+
 #define MAX_COMMAND_LENGTH 100
 #define MAX_ARGUMENTS 10
 
@@ -32,8 +35,7 @@ char* findCommandPath(const char* command);
 void printPathDirectories();
 
 int is_cmd(char *path);
-void cmd_handler(g_data info);
-ssize_t exec_cmd(g_data info, char *path);
+void cmd_handler(g_data *info);
 
 
 char *_getenv(const char *name, char **_environ);

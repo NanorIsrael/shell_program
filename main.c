@@ -15,7 +15,7 @@
  * @datash: data relevant (counter, arguments)
  * Return: Error message
  */
-void p_error(g_data datash)
+void p_error(g_data *info)
 {
 	int length;
 	char *error;
@@ -23,8 +23,8 @@ void p_error(g_data datash)
 
 	ver_str = "haibo";
     // aux_itoa(datash->counter);
-	length = strlen(datash.av) + strlen(ver_str);
-	length += strlen(datash.arguments[0]) + 16;
+	length = strlen(info->av) + strlen(ver_str);
+	length += strlen(info->arguments[0]) + 16;
 	error = malloc(sizeof(char) * (length + 1));
 	if (error == 0)
 	{
@@ -32,11 +32,11 @@ void p_error(g_data datash)
 		// free(ver_str);
 		// return (NULL);
 	}
-	strcpy(error, datash.av);
+	strcpy(error, info->av);
 	strcat(error, ": ");
 	strcat(error, ver_str);
 	strcat(error, ": ");
-	strcat(error, datash.arguments[0]);
+	strcat(error, info->arguments[0]);
 	strcat(error, ": not found\n");
 	strcat(error, "\0");
 	// free(ver_str);
@@ -46,7 +46,6 @@ void p_error(g_data datash)
 
 int main(int ac, char **av, char **env)
 {
-   
     g_data info;
 
     ac++;
@@ -56,14 +55,14 @@ int main(int ac, char **av, char **env)
 
     // To Do:
     // function to set_data(info)
-        
-    cmd_handler(info);
+
+    cmd_handler(&info);
 
     printf("Continuing my normal execution flow\n");
-
+    atexit(report_mem_leak);
 }
 
-ssize_t exec_cmd(g_data info, char *path)
+ssize_t exec_cmd(g_data *info, char *path)
 {
     int status;
 
@@ -77,10 +76,10 @@ ssize_t exec_cmd(g_data info, char *path)
     }
     else if (pid == 0)
     {
-        execve(path, info.arguments, NULL);
+        execve(path, info->arguments, NULL);
         // execvp(path, info.arguments);
 
-        perror(&info.av[0]);
+        perror(&(info->av[0]));
         exit(EXIT_FAILURE);
         return (-1);
     }
@@ -122,24 +121,24 @@ int is_cmd(char *path)
 
 // ssize_t handle_builtins(g_data *)
 
-void cmd_handler(g_data info)
+void cmd_handler(g_data *info)
 {
      int str_size, i = 0, ret;
 
-    while (ret != -1 ) {
+    // while (ret != -1 ) {
         // printf("Enter a command to %s\n", info.av[0]);
         // printf("$ ");
         write(STDOUT_FILENO, "$ " , 2);
 
-        fgets(info.command, sizeof(info.command), stdin);
+        fgets(info->command, sizeof(info->command), stdin);
 
       
-        str_size = strlen(info.command);
-        if ( str_size > 0 && info.command[str_size - 1] == '\n') {
-            info.command[str_size - 1] = '\0';
+        str_size = strlen(info->command);
+        if ( str_size > 0 && info->command[str_size - 1] == '\n') {
+            info->command[str_size - 1] = '\0';
         }
 
-        parseCommand(info.command, info.arguments);
+        parseCommand(info->command, info->arguments);
        
         // printPathDirectories(env);
         // puts("\n");
@@ -147,7 +146,7 @@ void cmd_handler(g_data info)
 
 
         // implement builtins here
-        char* commandPath =  findCommandPath(info.command);
+        char* commandPath =  findCommandPath(info->command);
 
         if (commandPath != NULL) {
             printf("Command path: %s\n", commandPath);
@@ -155,9 +154,9 @@ void cmd_handler(g_data info)
             
             free(commandPath);
         } else {
-            if (info.arguments[0][0] == '/' && is_cmd(info.arguments[0]) == 1)
+            if (info->arguments[0][0] == '/' && is_cmd(info->arguments[0]) == 1)
             {
-                exec_cmd(info, info.arguments[0]);
+                exec_cmd(info, info->arguments[0]);
                 free(commandPath);
             }
             else
@@ -165,8 +164,10 @@ void cmd_handler(g_data info)
                 // print_error(info, "Command not found in any path.");
                 p_error(info);
         }
+           atexit(report_mem_leak);
+
         // todo: handle builtins
-    }
+    // }
 }
 
 

@@ -19,8 +19,8 @@
 
 typedef struct global_data {
     char *file_name;
-    char command[MAX_COMMAND_LENGTH];
-    char *arguments[MAX_ARGUMENTS];
+    char *command;
+    char *arguments;
 } g_data;
 
 typedef struct builtins {

@@ -143,10 +143,10 @@ ssize_t handle_builtins(g_data *info)
 
 void cmd_handler(g_data *info)
 {
-     int str_size, i = 0, ret;
+     int str_size, i = 0, ret = 0;
 
-    // while (ret != -1 ) {
-        // printf("Enter a command to %s\n", info.av[0]);
+    while (ret != -2 ) 
+    {
         // printf("$ ");
         write(STDOUT_FILENO, "$ " , 2);
 
@@ -192,8 +192,9 @@ void cmd_handler(g_data *info)
             }
         }
            atexit(report_mem_leak);
+        printf("Enter a command to %d\n", ret);
 
-    // }
+    }
 }
 
 int exit_func(g_data *info)
@@ -203,4 +204,11 @@ int exit_func(g_data *info)
 
     printf("Hello world\n");
     return (0);
+}
+
+void init_g_data(g_data *info)
+{
+    info->file_name = NULL;
+    info->command = NULL;
+    info->arguments = NULL;
 }

@@ -36,7 +36,7 @@ int _atoi(const char *src)
  * Return: always int
  */
 
-int _isalpha(char q)
+int _isalpha(char c)
 {
 	if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
 	{
@@ -48,25 +48,25 @@ int _isalpha(char q)
 	}
 }
 
-/**
- * _memcpy - copies memory
- * @dest: a void pointer
- * @src: void pointer
- * @n: a variable
- */
+// /**
+//  * _memcpy - copies memory
+//  * @dest: a void pointer
+//  * @src: void pointer
+//  * @n: a variable
+//  */
 
-void _memcpy(void *dest, const void *src, unsigned int n)
-{
-	char *srcptr = (char *)src;
-	char *destptr = (char *)dest;
+// void _memcpy(void *dest, const void *src, unsigned int n)
+// {
+// 	char *srcptr = (char *)src;
+// 	char *destptr = (char *)dest;
 
-	while (n > 0)
-	{
-		destptr[n - 1] = srcptr[n - 1];
-		n--;
-	}
-	destptr[n] = '\0';
-}
+// 	while (n > 0)
+// 	{
+// 		destptr[n - 1] = srcptr[n - 1];
+// 		n--;
+// 	}
+// 	destptr[n] = '\0';
+// }
 
 /**
  * _memcpy - copies memory

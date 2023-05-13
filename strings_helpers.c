@@ -43,8 +43,9 @@ char *_strcpy(char *dest, char *src)
  * Return: Always a string
  */
 
-char *_strdup(const char *s)
+char *_strdup(char *s)
 {
+
 	size_t e = _strlen(s) + 1;
 	char *n = malloc(e);
 

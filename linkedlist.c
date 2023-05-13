@@ -27,11 +27,11 @@ int getlength(struct node  *key)
 
 void _print(struct node *head)
 {
-	struct node *pointer = head;
+	l_node *pointer = head;
 
 	while (pointer != NULL)
 	{
-		printf("node: %d\n", pointer->data);
+		printf("node: %s\n", pointer->data);
 		pointer = pointer->next;
 	}
 }

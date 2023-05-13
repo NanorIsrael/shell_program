@@ -30,6 +30,11 @@ typedef struct builtins {
     int (*handler)(g_data *);
 } csh_builtin;
 
+typedef struct node {
+    char *data;
+    struct node *next; 
+} l_node;
+
 
 // parser.c
 void parseCommand(g_data *info);
@@ -52,3 +57,8 @@ char **init_g_data(g_data *info, char **av, char **env);
 void free_all(g_data *);
 ssize_t is_shell_interactive();
 int parseline(const char *cmdline, char **argv);
+
+
+// string helpers
+int _strlen(char *s);
+void _memcpy(void *dest, const void *src, unsigned int n);

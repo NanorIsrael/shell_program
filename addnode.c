@@ -17,7 +17,7 @@ struct node *_insertatend(struct node *head)
 	 */
 
 	temt = head;
-	while (temt->next != NULL)
+	while (temt != NULL)
 	{
 		temt = temt->next;
 	}

@@ -55,12 +55,12 @@ int main(int ac __attribute__((unused)), char **av, char **env)
 
     // To Do:
     // function to set_data(info)
-    info.environ = init_g_data(&info, av, env);
+    init_g_data(&info, av, env);
     cmd_handler(&info);
 
     printf("Continuing my normal execution flow\n");
-    free_all(&info);
-    atexit(report_mem_leak);
+    // free_all(&info);
+    // atexit(report_mem_leak);
 }
 
 ssize_t exec_cmd(g_data *info, char *path)
@@ -145,8 +145,8 @@ void cmd_handler(g_data *info)
 {
     int str_size, i = 0, ret = 0;
 
-    // while (ret != -2 && info->is_interactive) 
-    // {
+    while (ret != -2 && info->is_interactive) 
+    {
         info->is_interactive = is_shell_interactive();
         if (info->is_interactive == 1)
         {
@@ -190,9 +190,7 @@ void cmd_handler(g_data *info)
                 }   
             }
         }
-        // free_all(info);   
-        atexit(report_mem_leak);
-        printf("Enter a command to %d\n", ret);
+
         // if (is_shell_interactive() != 0)
         // {
         //    printf("Shell is interactive \n");
@@ -200,7 +198,10 @@ void cmd_handler(g_data *info)
             
         // }
          
-    // }
+    }
+    printf("Enter a command to %d\n", ret);
+    free_all(info);   
+    atexit(report_mem_leak);
 }
 
 int exit_func(g_data *info)
@@ -211,7 +212,7 @@ int exit_func(g_data *info)
     // leak_test++;
     printf("Hello world\n");
     // exit(0);
-    return (0);
+    return (-2);
 }
 
 int cd_func(g_data *info)
@@ -225,7 +226,8 @@ int cd_func(g_data *info)
 
 void free_all(g_data *info)
 {   
-    // free(info->environ);
+
+    free(info->environ);
     // free(info->arguments);
 }
 

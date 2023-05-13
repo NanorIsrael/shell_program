@@ -10,7 +10,19 @@ a c shell program
 
 - Can not handle file manipulations
 
-
+- aliases, builtins and the environment
 
 # Bugs
 - Handle echo "/bin/ls" | ./hsh
+
+# Test suit
+consult make file (not an exhustive list)
+
+
+# Handle built-ins
+work on the built in functions
+- exit
+- cd
+- alias
+- help
+- setenv

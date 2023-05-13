@@ -44,21 +44,22 @@ void p_error(g_data *info)
 		free(error);
 }
 
-int main(int ac, char **av, char **env)
+int main(int ac __attribute__((unused)), char **av, char **env)
 {
     g_data info;
 
     ac++;
     // *av++;
 
-    info.file_name = av[0];
+    // info.file_name = av[0];
 
     // To Do:
     // function to set_data(info)
-
+    info.environ = init_g_data(&info, av, env);
     cmd_handler(&info);
 
     printf("Continuing my normal execution flow\n");
+    free_all(&info);
     atexit(report_mem_leak);
 }
 
@@ -72,16 +73,14 @@ ssize_t exec_cmd(g_data *info, char *path)
     {
         perror("fork");
         exit(EXIT_FAILURE);
-        return (-1);
     }
     else if (pid == 0)
     {
-        execve(path, info->arguments, NULL);
+        execve(path, info->arguments, info->environ);
         // execvp(path, info.arguments);
 
         perror(info->file_name);
         exit(EXIT_FAILURE);
-        return (-1);
     }
     else {
         wait(&status);
@@ -124,6 +123,7 @@ ssize_t handle_builtins(g_data *info)
     int idx, result = -1;
     csh_builtin cbuiltins[] = {
         {"exit", exit_func}, 
+        {"cd", cd_func}, 
         {NULL, NULL}
     };
 
@@ -143,36 +143,37 @@ ssize_t handle_builtins(g_data *info)
 
 void cmd_handler(g_data *info)
 {
-     int str_size, i = 0, ret = 0;
+    int str_size, i = 0, ret = 0;
 
-    while (ret != -2 ) 
-    {
-        // printf("$ ");
-        write(STDOUT_FILENO, "$ " , 2);
+    // while (ret != -2 && info->is_interactive) 
+    // {
+        info->is_interactive = is_shell_interactive();
+        if (info->is_interactive == 1)
+        {
+            write(STDOUT_FILENO, "$ " , 2);
+            fflush(stdout);
+        }
 
-        fgets(info->command, sizeof(info->command), stdin);
-
+        fgets((info->command), sizeof(info->command), stdin);
+        fflush(stdin);
       
         str_size = strlen(info->command);
         if ( str_size > 0 && info->command[str_size - 1] == '\n') {
             info->command[str_size - 1] = '\0';
         }
 
-        parseCommand(info->command, info->arguments);
-       
-        // printPathDirectories(env);
-        // puts("\n");
-        // puts("\n");
+        parseCommand(info);
+        // parseline(info->command, info->arguments); 
 
 
-        // implement builtins here
+        // // implement builtins here
         ret = handle_builtins(info);
         if (ret == -1) 
         {
             char* commandPath =  findCommandPath(info->command);
 
             if (commandPath != NULL) {
-                printf("Command path: %s\n", commandPath);
+                printf("Command path: %s\n", info->arguments[0]);
                 exec_cmd(info, commandPath);
                 
                 free(commandPath);
@@ -185,30 +186,50 @@ void cmd_handler(g_data *info)
                 }
                 else
                 {
-                    // printf("Command not found in any path.\n");
-                    // print_error(info, "Command not found in any path.");
                     p_error(info);
                 }   
             }
         }
-           atexit(report_mem_leak);
+        // free_all(info);   
+        atexit(report_mem_leak);
         printf("Enter a command to %d\n", ret);
-
-    }
+        // if (is_shell_interactive() != 0)
+        // {
+        //    printf("Shell is interactive \n");
+        //    putchar('\n');
+            
+        // }
+         
+    // }
 }
 
 int exit_func(g_data *info)
 {
     // char *leak_test;
-    // leak_test = malloc(sizeof(char));
+    // leak_test = malloc(sizeof(char *) *2);
 
+    // leak_test++;
     printf("Hello world\n");
+    // exit(0);
     return (0);
 }
 
-void init_g_data(g_data *info)
+int cd_func(g_data *info)
 {
-    info->file_name = NULL;
-    info->command = NULL;
-    info->arguments = NULL;
+    // char *leak_test;
+    // leak_test = malloc(sizeof(char));
+
+    printf("Yet to implement change directory\n");
+    return (0);
+}
+
+void free_all(g_data *info)
+{   
+    // free(info->environ);
+    // free(info->arguments);
+}
+
+ssize_t is_shell_interactive()
+{
+    return isatty(STDIN_FILENO);
 }

@@ -8,9 +8,9 @@ char **init_g_data(g_data *info, char **av, char **env)
 
     info->file_name = av[0];
     info->is_interactive = 1;
-
+    info->alias_db = NULL;
+    // info->alias_db->next = NULL;
     // info->command = malloc(sizeof(1024));;
-    // info->arguments = NULL;
 
     for (idx = 0; env[idx]; idx++)
         ;

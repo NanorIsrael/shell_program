@@ -17,12 +17,25 @@
 #define MAX_COMMAND_LENGTH 1024
 #define MAX_ARGUMENTS 128
 
+// typedef struct aliases {
+//     char *alias_name;
+//     char *real_name;
+// } alias;
+
+// alias **alias_db[] = { NULL, NULL };
+
+typedef struct node {
+    char *data;
+    struct node *next; 
+} l_node;
+
 typedef struct global_data {
     char *file_name;
     char command[MAX_COMMAND_LENGTH];
     char *arguments[MAX_ARGUMENTS];
     int   is_interactive;
     char **environ;
+    l_node *alias_db;
 } g_data;
 
 typedef struct builtins {
@@ -30,10 +43,6 @@ typedef struct builtins {
     int (*handler)(g_data *);
 } csh_builtin;
 
-typedef struct node {
-    char *data;
-    struct node *next; 
-} l_node;
 
 
 // parser.c
@@ -51,6 +60,7 @@ char *_getenv(const char *name, char **_environ);
 // builtins
 int exit_func(g_data *info);
 int cd_func(g_data *info);
+int alias_func(g_data *info);
 
 // misc.d
 char **init_g_data(g_data *info, char **av, char **env);
@@ -62,3 +72,14 @@ int parseline(const char *cmdline, char **argv);
 // string helpers
 int _strlen(char *s);
 void _memcpy(void *dest, const void *src, unsigned int n);
+
+// aliases.c
+int set_alias(g_data *info, char *s);
+// void check_alias(char *s);
+
+// add_node.c
+void insert_at_end(g_data *info, l_node **head, const char *str);
+
+// linkedlist.c
+void print_list(struct node *head);
+void freeList(l_node **head);

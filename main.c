@@ -124,6 +124,7 @@ ssize_t handle_builtins(g_data *info)
     csh_builtin cbuiltins[] = {
         {"exit", exit_func}, 
         {"cd", cd_func}, 
+        {"alias", alias_func}, 
         {NULL, NULL}
     };
 
@@ -204,30 +205,13 @@ void cmd_handler(g_data *info)
     atexit(report_mem_leak);
 }
 
-int exit_func(g_data *info)
-{
-    // char *leak_test;
-    // leak_test = malloc(sizeof(char *) *2);
 
-    // leak_test++;
-    printf("Hello world\n");
-    // exit(0);
-    return (-2);
-}
-
-int cd_func(g_data *info)
-{
-    // char *leak_test;
-    // leak_test = malloc(sizeof(char));
-
-    printf("Yet to implement change directory\n");
-    return (0);
-}
 
 void free_all(g_data *info)
 {   
 
     free(info->environ);
+    freeList(&(info->alias_db));
     // free(info->arguments);
 }
 

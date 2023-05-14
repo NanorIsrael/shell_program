@@ -25,14 +25,17 @@ int getlength(struct node  *key)
  * @head: head node
  */
 
-void _print(struct node *head)
+void print_list(l_node *head)
 {
-	l_node *pointer = head;
+	l_node *ptr = head;
 
-	while (pointer != NULL)
+	if (head == NULL)
+		return;
+
+	while (ptr != NULL)
 	{
-		printf("node: %s\n", pointer->data);
-		pointer = pointer->next;
+		printf("%s\n", ptr->data);
+		ptr = ptr->next;
 	}
 }
 
@@ -78,4 +81,18 @@ struct node *_delete(struct node *head, int pos)
 	temp->next = new->next;
 	free(new);
 	return (temp);
+}
+
+
+void freeList(l_node **head) {
+    l_node* current = *head;
+    l_node* next;
+    
+    while (current != NULL) {
+        next = current->next;
+        free(current);
+        current = next;
+    }
+    
+    *head = NULL;
 }

@@ -6,23 +6,49 @@
  * Return: Always a node
  */
 
-struct node *_insertatend(struct node *head)
+ void insert_at_end(g_data *info, l_node **head, const char *str)
 {
-	struct node *temt, *new;
+	l_node *temp, *new, *prev;
 
-	/*
-	 * new = (struct node *)malloc(sizeof(struct node));
-	 * printf("Enter data:");
-	 * scanf("%d", &new->data);
-	 */
+	if (!str)
+		return;
 
-	temt = head;
-	while (temt != NULL)
+	new = malloc(sizeof(l_node));
+	if (!new)
 	{
-		temt = temt->next;
+		free(new);
+		return;
 	}
-	temt->next = new;
-	return (new);
+
+	
+	new->data = strdup(str);
+	new->next = NULL;
+
+	if (!new->data)
+	{
+		free(new);
+		return;
+	}
+
+	temp = *head;
+	if (*head == NULL)
+	{
+		*head = new;
+	}
+	else 
+	{
+		while (temp != NULL)
+		{
+			prev = temp;
+			temp = temp->next;
+		}
+
+		temp = new;
+	 	prev->next = temp;
+	}
+
+	// free(new);
+	// return (new);
 }
 
 /**

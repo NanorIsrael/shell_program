@@ -14,6 +14,10 @@ a c shell program
 
 # Bugs
 - Handle echo "/bin/ls" | ./hsh
+- alias ls="ls -F"  
+- alias dirA="echo working directory is $PWD" 
+- bash: alias: {aliasname}: not found
+- unalias
 
 # Test suit
 consult make file (not an exhustive list)

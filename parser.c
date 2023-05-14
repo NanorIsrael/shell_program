@@ -3,14 +3,6 @@
 void parseCommand(g_data *info)
 {
     int argIndex = 0, idx;
-    // static char array[MAX_COMMAND_LENGTH];
-    // char *buf = array;
-
-    // strcpy(buf, info->command); 
-    // // buf[strlen(buf) - 1] = ' '; 
-    // while (*buf && (*buf == ' '))
-    // buf++;
-
     char *token = strtok(info->command, " \t\n\r");
 
     while (token != NULL)
@@ -21,6 +13,8 @@ void parseCommand(g_data *info)
     }
 
     info->arguments[argIndex] = NULL;
+
+    // while ((token))
 }
 
 char* findCommandPath(const char* command) {

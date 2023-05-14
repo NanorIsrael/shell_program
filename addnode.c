@@ -6,7 +6,7 @@
  * Return: Always a node
  */
 
- void insert_at_end(g_data *info, l_node **head, const char *str)
+ void insert_at_end(g_data *info, l_node **head, const char *str, const char *sub_data)
 {
 	l_node *temp, *new, *prev;
 
@@ -22,6 +22,7 @@
 
 	
 	new->data = strdup(str);
+	new->sub_data = sub_data ? strdup(sub_data) : "\'\'";
 	new->next = NULL;
 
 	if (!new->data)
@@ -33,6 +34,7 @@
 	temp = *head;
 	if (*head == NULL)
 	{
+		// new->id = 0;
 		*head = new;
 	}
 	else 
@@ -44,6 +46,7 @@
 		}
 
 		temp = new;
+		// temp->id += 1;
 	 	prev->next = temp;
 	}
 

@@ -26,6 +26,7 @@
 
 typedef struct node {
     char *data;
+    char *sub_data;
     struct node *next; 
 } l_node;
 
@@ -36,6 +37,7 @@ typedef struct global_data {
     int   is_interactive;
     char **environ;
     l_node *alias_db;
+    int alias_id;
 } g_data;
 
 typedef struct builtins {
@@ -74,11 +76,11 @@ int _strlen(char *s);
 void _memcpy(void *dest, const void *src, unsigned int n);
 
 // aliases.c
-int set_alias(g_data *info, char *s);
+int set_alias(g_data *info);
 // void check_alias(char *s);
 
 // add_node.c
-void insert_at_end(g_data *info, l_node **head, const char *str);
+void insert_at_end(g_data *info, l_node **head, const char *str, const char *sub_data);
 
 // linkedlist.c
 void print_list(struct node *head);

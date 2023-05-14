@@ -1,5 +1,5 @@
 DRIVER = ./sdriver.pl
-PATH_CMDS = ls /bin/ls `ls -l`
+PATH_CMDS = ls /bin/ls 'ls -l'
 INBUILTS_CMDS = exit
 
 cc: 

@@ -22,14 +22,27 @@ int cd_func(g_data *info)
 
 int alias_func(g_data *info)
 {
+    char *alias;
+    l_node *tmp;
+
     if (info->arguments[1])
     {
-        set_alias(info, info->arguments[1]);
+        alias = strchr(info->arguments[1], '=');
+        if (!alias)
+            return (0);
+
+        // printf("%s", alias);
+        set_alias(info);
         //  print_list(info->alias_db);
     }
     else
     {
-        print_list(info->alias_db);
+        tmp = info->alias_db;
+        while (tmp != NULL)
+        {
+            printf("%s=%s\n", tmp->data, tmp->sub_data);
+            tmp = tmp->next;
+        }
     }
     //  printf("Yet to implement %s\n", info->arguments[1]);
 

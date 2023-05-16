@@ -2,13 +2,6 @@
 
 int exit_func(g_data *info)
 {
-    // char *leak_test;
-    // leak_test = malloc(sizeof(char *) *2);
-
-    // leak_test++;
-    printf("Hello world\n");
-    // exit(0);
-    return (-2);
 }
 
 int cd_func(g_data *info)

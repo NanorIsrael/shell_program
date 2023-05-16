@@ -100,7 +100,7 @@ int alias_func(g_data *info)
 
 void _help(g_data *info)
 {
-    -puts("Simple Shell");
+    _puts("Simple Shell");
     _puts("builtin commands avaiable are:");
     _puts("exit - Used to exit the shell");
     _puts("cd - Used to change directory");

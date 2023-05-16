@@ -19,7 +19,7 @@ int exit_func(g_data *info)
 
 int cd_func(g_data *info)
 {
-
+    printf("notimplemented\n");
 }
 
 int alias_func(g_data *info)

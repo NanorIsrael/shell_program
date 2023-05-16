@@ -27,7 +27,7 @@
 typedef struct node {
     char *data;
     char *sub_data;
-    struct node *next; 
+    struct node *next;
 } l_node;
 
 typedef struct global_data {
@@ -91,3 +91,5 @@ void insert_at_end(l_node **head, const char *str, const char *sub_data);
 // linkedlist.c
 void print_list(struct node *head);
 void freeList(l_node **head);
+void _help(g_data *info);
+void _prerror(char *e);

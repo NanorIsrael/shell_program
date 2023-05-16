@@ -2,15 +2,24 @@
 
 int exit_func(g_data *info)
 {
+        char *u;
+        int status;
+
+        u = _strtokk(info + 4, " ");
+        if (u != NULL)
+        {
+                status = _atoi(u);
+                exit(status);
+        }
+        else
+        {
+                exit(0);
+        }
 }
 
 int cd_func(g_data *info)
 {
-    // char *leak_test;
-    // leak_test = malloc(sizeof(char));
-
-    printf("Yet to implement change directory\n");
-    return (0);
+    
 }
 
 int alias_func(g_data *info)

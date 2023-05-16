@@ -19,7 +19,7 @@ int exit_func(g_data *info)
 
 int cd_func(g_data *info)
 {
-    
+
 }
 
 int alias_func(g_data *info)
@@ -58,5 +58,15 @@ int alias_func(g_data *info)
     }
 
     return (0);
+}
+
+void _help(char *g)
+{
+    -puts("Simple Shell");
+    _puts("builtin commands avaiable are:");
+    _puts("exit - Used to exit the shell");
+    _puts("cd - Used to change directory");
+    _puts("help - Gives lists of command s available");
+    _puts("setenv - Initialize a new environment variable");
 }
 

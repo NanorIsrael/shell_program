@@ -93,3 +93,4 @@ void print_list(struct node *head);
 void freeList(l_node **head);
 void _help(g_data *info);
 void _prerror(char *e);
+void _puts(const char *s);

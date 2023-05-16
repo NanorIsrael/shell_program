@@ -53,7 +53,11 @@ int cd_func(g_data *info)
         perror("chdir");
         return(-1);
     }
-    c = malloc(PATH_MAX +5)
+    c = malloc(PATH_MAX +5);
+    getcwd(c, PATH_MAX);
+    setenv("PWD", c, 1);
+    free(c);
+    return(0);
 }
 
 int alias_func(g_data *info)

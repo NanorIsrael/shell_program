@@ -24,9 +24,7 @@ void _puts(const char *s)
 
 void _prerror(char *e)
 {
-        char *y;
-
-        y = malloc(sizeof(char *) * _strlen(e) + _strlen(" :not found"));
+        char *y[1024];
         y = _strcat(e, ":not found");
         write(STDOUT_FILENO, y, _strlen(y));
         write(STDOUT_FILENO, "\n", 1);

@@ -5,7 +5,7 @@ int exit_func(g_data *info)
         char *u;
         int status;
 
-        u = _strtokk(info + 4, " ");
+        u = strtok(info + 4, " ");
         if (u != NULL)
         {
                 status = _atoi(u);

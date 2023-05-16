@@ -7,7 +7,7 @@
 // 	print_d(info->line_count, STDERR_FILENO);
 // 	puts(": ");
 // 	puts(info->arguments[0]);
-// 	puts(": ");
+// 	puts(": ");g
 // 	puts(estr);
 // }
 /**
@@ -122,9 +122,9 @@ ssize_t handle_builtins(g_data *info)
 {
     int idx, result = -1;
     csh_builtin cbuiltins[] = {
-        {"exit", exit_func}, 
-        {"cd", cd_func}, 
-        {"alias", alias_func}, 
+        {"exit", exit_func},
+        {"cd", cd_func},
+        {"alias", alias_func},
         {NULL, NULL}
     };
 
@@ -144,7 +144,7 @@ ssize_t handle_builtins(g_data *info)
     }
     else
         result = 0;
-    
+
 
     return (result);
 }
@@ -153,7 +153,7 @@ void cmd_handler(g_data *info)
 {
     int str_size, i = 0, ret = 0;
 
-    while (ret != -2 && info->is_interactive) 
+    while (ret != -2 && info->is_interactive)
     {
         info->is_interactive = is_shell_interactive();
         if (info->is_interactive == 1)
@@ -164,8 +164,8 @@ void cmd_handler(g_data *info)
 
         fgets((info->command), sizeof(info->command), stdin);
         fflush(stdin);
-      
-      
+
+
         // if(strlen(info->command) > 0)
         // {
             str_size = strlen(info->command);
@@ -177,20 +177,20 @@ void cmd_handler(g_data *info)
         // else {
         //     ret = 0;
         // }
-        // parseline(info->command, info->arguments); 
+        // parseline(info->command, info->arguments);
         // printf("One love %s\n", info->arguments[0]);
 
         // // implement builtins here
         ret = handle_builtins(info);
-        if (ret == -1) 
-        {   
+        if (ret == -1)
+        {
             printf("got here\n");
             // char* commandPath =  findCommandPath(info->arguments[0]);
 
             // if (commandPath != NULL) {
             //     printf("Command path: %s\n", commandPath);
             //     exec_cmd(info, commandPath);
-                
+
             //     free(commandPath);
             // }
             // else {
@@ -203,7 +203,7 @@ void cmd_handler(g_data *info)
             //     {
             //         // check if is an alias and execute here
             //         p_error(info);
-            //     }   
+            //     }
             // }
         }
 
@@ -211,19 +211,19 @@ void cmd_handler(g_data *info)
         // {
         //    printf("Shell is interactive \n");
         //    putchar('\n');
-            
+
         // }
-         
+
     }
     printf("Enter a command to %d\n", ret);
-    free_all(info);   
+    free_all(info);
     atexit(report_mem_leak);
 }
 
 
 
 void free_all(g_data *info)
-{   
+{
 
     free(info->environ);
     freeList(&(info->alias_db));

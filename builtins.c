@@ -60,7 +60,7 @@ int alias_func(g_data *info)
     return (0);
 }
 
-void _help(char *g)
+void _help(g_data *info)
 {
     -puts("Simple Shell");
     _puts("builtin commands avaiable are:");

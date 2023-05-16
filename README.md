@@ -18,6 +18,7 @@ a c shell program
 - alias dirA="echo working directory is $PWD" 
 - bash: alias: {aliasname}: not found
 - unalias
+- using quoted command like 'ls'
 
 # Test suit
 consult make file (not an exhustive list)

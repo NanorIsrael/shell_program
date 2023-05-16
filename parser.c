@@ -2,19 +2,32 @@
 
 void parseCommand(g_data *info)
 {
-    int argIndex = 0, idx;
-    char *token = strtok(info->command, " \t\n\r");
+    int argIndex = 0, idx = 0;
+    char *token, *rest;
+    char *quote = "\"'";
+    char *delim = " \t\n\r";
+    info->number_of_args = 0;
+    // const char *dupstr = strdup(info->command);
+        if (strchr(quote, info->command[0]))
+        {
+            rest = sanitize_string2(info->command);
+            token = strtok(rest, delim);
+            free(rest);
+        }
+        else
+        {
+            rest = info->command;
+            token = strtok(rest, delim);
+        }
 
     while (token != NULL)
     {
         info->arguments[argIndex] = token;
-        token = strtok(NULL, " \t\n\r");
+        token = strtok(NULL, delim);
         argIndex++;
+        info->number_of_args++;
     }
-
-    info->arguments[argIndex] = NULL;
-
-    // while ((token))
+    info->arguments[argIndex] = NULL;   
 }
 
 char* findCommandPath(const char* command) {
@@ -132,4 +145,42 @@ int parseline(const char *cmdline, char **argv)
 	argv[--argc] = NULL;
     }
     return bg;
+}
+
+char* sanitize_string(char* str) {
+    int len = strlen(str);
+    char* sanitized_str = malloc(len * 2 + 1); // Allocate enough space for worst case scenario (every character is a quote)
+    if (sanitized_str == NULL) {
+        fprintf(stderr, "Error: Could not allocate memory for sanitized string.\n");
+        return NULL;
+    }
+    int j = 0;
+    for (int i = 0; i < len; i++) {
+        if (str[i] == '\'' || str[i] == '\"' || str[i] == '\\') {
+            // Escape the character
+            sanitized_str[j++] = '\\';
+        }
+        sanitized_str[j++] = str[i];
+    }
+    sanitized_str[j] = '\0'; // Null-terminate the string
+    return sanitized_str;
+}
+char* sanitize_string2(char* str) {
+    int len = strlen(str);
+    char* sanitized_str = malloc(len * 2 + 1); // Allocate enough space for worst case scenario (every character is a quote)
+    if (sanitized_str == NULL) {
+        fprintf(stderr, "Error: Could not allocate memory for sanitized string.\n");
+        return NULL;
+    }
+    int j = 0;
+    for (int i = 0; i < len; i++) {
+        if (str[i] == '\'' || str[i] == '\"' || str[i] == '\\') {
+            // Escape the character
+            // sanitized_str[j++] = '\\';
+            continue;
+        }
+        sanitized_str[j++] = str[i];
+    }
+    sanitized_str[j] = '\0'; // Null-terminate the string
+    return sanitized_str;
 }

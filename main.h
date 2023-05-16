@@ -37,7 +37,7 @@ typedef struct global_data {
     int   is_interactive;
     char **environ;
     l_node *alias_db;
-    int alias_id;
+    int number_of_args;
 } g_data;
 
 typedef struct builtins {
@@ -74,13 +74,19 @@ int parseline(const char *cmdline, char **argv);
 // string helpers
 int _strlen(char *s);
 void _memcpy(void *dest, const void *src, unsigned int n);
-
+char* sanitize_string(char* str);
+char* sanitize_string2(char* str);
+char* surround_with_quotes(const char* str);
+int contains_quotes(const char* str);
 // aliases.c
 int set_alias(g_data *info);
+int is_valid_alias(char *s);
+l_node *find_alias(g_data *info, int idx);
+void perform_alias_insert(g_data *info, char *data, char *sd);
 // void check_alias(char *s);
 
 // add_node.c
-void insert_at_end(g_data *info, l_node **head, const char *str, const char *sub_data);
+void insert_at_end(l_node **head, const char *str, const char *sub_data);
 
 // linkedlist.c
 void print_list(struct node *head);

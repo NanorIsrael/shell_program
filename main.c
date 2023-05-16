@@ -128,16 +128,23 @@ ssize_t handle_builtins(g_data *info)
         {NULL, NULL}
     };
 
-    for (idx = 0; cbuiltins[idx].name; idx++)
+        // printf("this is commmand %s\n", info->command);
+        // printf("this is arg 0 %s\n", info->arguments[0]);
+    if (info->arguments[0])
     {
-        if (strcmp(cbuiltins[idx].name, info->command) == 0)
+        for (idx = 0; cbuiltins[idx].name; idx++)
+    {
+        if (strcmp(cbuiltins[idx].name, info->arguments[0]) == 0)
         {
             // todo some counter
             result = cbuiltins[idx].handler(info);
             break;
         }
-
     }
+    }
+    else
+        result = 0;
+    
 
     return (result);
 }
@@ -158,38 +165,46 @@ void cmd_handler(g_data *info)
         fgets((info->command), sizeof(info->command), stdin);
         fflush(stdin);
       
-        str_size = strlen(info->command);
-        if ( str_size > 0 && info->command[str_size - 1] == '\n') {
+      
+        // if(strlen(info->command) > 0)
+        // {
+            str_size = strlen(info->command);
+            if ( str_size > 0 && info->command[str_size - 1] == '\n') {
             info->command[str_size - 1] = '\0';
         }
-
-        parseCommand(info);
+            parseCommand(info);
+        // }
+        // else {
+        //     ret = 0;
+        // }
         // parseline(info->command, info->arguments); 
-
+        // printf("One love %s\n", info->arguments[0]);
 
         // // implement builtins here
         ret = handle_builtins(info);
         if (ret == -1) 
-        {
-            char* commandPath =  findCommandPath(info->command);
+        {   
+            printf("got here\n");
+            // char* commandPath =  findCommandPath(info->arguments[0]);
 
-            if (commandPath != NULL) {
-                printf("Command path: %s\n", info->arguments[0]);
-                exec_cmd(info, commandPath);
+            // if (commandPath != NULL) {
+            //     printf("Command path: %s\n", commandPath);
+            //     exec_cmd(info, commandPath);
                 
-                free(commandPath);
-            }
-            else {
-                if (info->arguments[0][0] == '/' && is_cmd(info->arguments[0]) == 1)
-                {
-                    exec_cmd(info, info->arguments[0]);
-                    free(commandPath);
-                }
-                else
-                {
-                    p_error(info);
-                }   
-            }
+            //     free(commandPath);
+            // }
+            // else {
+            //     if (info->arguments[0][0] == '/' && is_cmd(info->arguments[0]) == 1)
+            //     {
+            //         exec_cmd(info, info->arguments[0]);
+            //         free(commandPath);
+            //     }
+            //     else
+            //     {
+            //         // check if is an alias and execute here
+            //         p_error(info);
+            //     }   
+            // }
         }
 
         // if (is_shell_interactive() != 0)

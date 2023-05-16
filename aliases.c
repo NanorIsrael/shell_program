@@ -1,75 +1,107 @@
 #include "main.h"
 
-// #define MAX_ALIASES 100;
-// typedef struct aliases {
-//     char *alias_name;
-//     char *real_name;
-// } alias;
 
-// alias alias_db[] = { NULL, NULL };
-// const char **alias_commands[MAX_ALIASES];
+// void unalias(g_data *info, char *s)
+// {
+//     l_node *tmp;
 
-void check_alias(g_data *info, char *s)
-{
-    // l_node *temp = info->alias_db;
-
-    // while (temp != NULL)
-    // {
-    //     printf("%s", alias_db[idx].alias_name);
-
-    //     idx++;
-    // }
-}
+//     tmp = info->alias_db;
+//     while (tmp != NULL)
+//     {
+//             if (strcmp(info->arguments[idx], tmp->data) == 0)
+//             {
+//                 return tmp;
+//             }
+//             tmp = tmp->next;
+//     }
+// }
 
 int set_alias(g_data *info)
 {
-    int idx = 1;
-    // if (info->ar)
+    int idx = 1, excess_count = 0;
     char *token, *alias, *cmd, *arg_check;
-    //  *ptr;
-    while (info->arguments[idx] != NULL)
+    char *ensure_full_alias[100], *token_copy;
+
+    // info->arguments[info->number_of_args - 1] = NULL;
+    while (idx <= info->number_of_args && info->arguments[idx] != NULL)
     {
-        arg_check = strchr(info->arguments[idx], '=');
-        if (!arg_check)
+     
+        if (contains_quotes(strdup(info->arguments[idx])))
         {
-            printf("sh: alias: %s: not found\n", info->arguments[idx]);
-            idx++;
-            continue;
+            token_copy = malloc(sizeof(char *) * 1024);
+                strcpy(token_copy, info->arguments[idx]);
+                    idx++;
+                    while (info->arguments[idx] != NULL) {
+                        strcat(token_copy, " ");
+                        strcat(token_copy, info->arguments[idx]);
+
+                        if((strchr(info->arguments[idx], '\'')) || (strchr(info->arguments[idx], '\"')))
+                            break;
+
+                        idx++;
+                    }
+                    token = strtok(token_copy, "=");
+                    free(token_copy);
+        }
+        else
+        {
+            if (is_valid_alias(info->arguments[idx]))
+                token =  strtok(info->arguments[idx], "=");
+            else
+            {
+                idx++;
+                continue;
+            }
+               
         }
 
-        token = strtok(info->arguments[idx], "=");
-    
         while (token != NULL)
         {
-            alias = token;
-            token = strtok(NULL,  " \t\n");
-            cmd = token;
+            ensure_full_alias[excess_count] = token;
+            excess_count++;
+            token= strtok(NULL, " \t\n");
+        }
+        ensure_full_alias[excess_count] = NULL;
 
-            if (!cmd)
+        cmd = malloc(sizeof(char *) * 1024);
+        for (int j= 0; j < excess_count - 1; j++)
+        {
+            alias = strdup(ensure_full_alias[j]);
+            j++;
+            if (strlen(ensure_full_alias[j]) > 0 && contains_quotes(ensure_full_alias[j]))
             {
-                insert_at_end(info, &(info->alias_db), alias, NULL);
+                strcpy(cmd, strdup(ensure_full_alias[j]));
+                j++;
+                while(j < excess_count)
+                {
+                    strcat(cmd, " ");
+                    strcat(cmd, strdup(ensure_full_alias[j]));
+                    j++;
+                }
+                cmd = surround_with_quotes(sanitize_string2(cmd));
             }
             else
             {
-                insert_at_end(info, &(info->alias_db), alias, cmd);
+                cmd = strlen(ensure_full_alias[j]) > 0 ? 
+                surround_with_quotes(strdup(ensure_full_alias[j])) 
+                : NULL;
             }
-            printf("%s = %s\n", alias, cmd);
-            token = strtok(NULL, " \t\n");
         }
+            if (!cmd)
+                perform_alias_insert(info, alias, NULL);
+                // insert_at_end(&(info->alias_db), alias, NULL);
+        
+            else
+                perform_alias_insert(info, alias, cmd);
+
+        excess_count = 0;
         idx++;
     }
-    // if(!r_name)
-    //     return (1);
-    // To Do: unset when !*+++p
-
-    // call unset here
-
-    
 
     return (1);
 }
 
-int free_alias(g_data *info, const char *str)
+int free_alias(const char *str)
 {
     char *temp, ptr;
     int result;
@@ -83,4 +115,90 @@ int free_alias(g_data *info, const char *str)
     // result = delete node here
 
     return (result);
+}
+
+char* surround_with_quotes(const char* str) {
+    size_t len = strlen(str);
+    char* quoted_str = malloc(len + 3); // Allocate memory for the quoted string
+
+    if (quoted_str == NULL) {
+        fprintf(stderr, "Error: Could not allocate memory for quoted string.\n");
+        return NULL;
+    }
+
+    // Add the opening quote
+    quoted_str[0] = '\'';
+    
+    // Copy the original string
+    strncpy(quoted_str + 1, str, len);
+
+    // Add the closing quote
+    quoted_str[len + 1] = '\'';
+    quoted_str[len + 2] = '\0';
+
+    return quoted_str;
+}
+
+int contains_quotes(const char* str) {
+    return (strchr(str, '\"') != NULL) || (strchr(str, '\'') != NULL);
+}
+
+int is_valid_alias(char *s)
+{
+    char *arg_check;
+
+    arg_check = strchr(s, '=');
+    if (!arg_check)
+    {
+        printf("sh: alias: %s: not found\n", s);
+        return (0);
+    }
+
+    return (1);
+}
+
+l_node *find_alias(g_data *info, int idx)
+{
+    l_node *tmp;
+
+        tmp = info->alias_db;
+        while (tmp != NULL)
+        {
+            if (strcmp(info->arguments[idx], tmp->data) == 0)
+            {
+                return tmp;
+            }
+            tmp = tmp->next;
+        }
+
+    return (NULL);
+}
+
+void perform_alias_insert(g_data *info, char *data, char *sd)
+{
+    l_node *tmp;
+
+        tmp = info->alias_db;
+        if (tmp != NULL)
+        {
+            while (tmp != NULL)
+            {
+                if (strcmp(data, tmp->data) == 0)
+                {
+                        tmp->data = data;
+                        tmp->sub_data = sd ? sd : "'\'\'";
+                        break;
+                }
+                else if(tmp->next == NULL)
+                {                    
+                    insert_at_end(&(info->alias_db), data, sd);
+                }
+               
+                tmp = tmp->next;
+            }
+        }
+        else
+        {
+            insert_at_end(&(info->alias_db), data, sd);
+        }
 }

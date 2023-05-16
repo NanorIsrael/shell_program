@@ -6,7 +6,7 @@
  * Return: Always a node
  */
 
- void insert_at_end(g_data *info, l_node **head, const char *str, const char *sub_data)
+ void insert_at_end(l_node **head, const char *str, const char *sub_data)
 {
 	l_node *temp, *new, *prev;
 

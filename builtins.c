@@ -41,8 +41,19 @@ int cd_func(g_data *info)
     }
     else
     {
-        d 
+        d = info->command;
     }
+
+    n = malloc(PATH_MAX);
+    getcwd(n, PATH_MAX);
+    setenv("OLDPWD", n, 1);
+    free(n);
+    if (chdir(d == -1))
+    {
+        perror("chdir");
+        return(-1);
+    }
+    c = malloc(PATH_MAX +5)
 }
 
 int alias_func(g_data *info)

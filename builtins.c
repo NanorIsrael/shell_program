@@ -19,7 +19,30 @@ int exit_func(g_data *info)
 
 int cd_func(g_data *info)
 {
-    printf("notimplemented\n");
+    char *d, *n, *c;
+    if(info->command == NULL)
+    {
+        d = getenv("HOME");
+        if (d == NULL)
+        {
+            perror("cd");
+            return(-1);
+        }
+    }
+    else if (strcmp(info->command, "-")== 0)
+    {
+        d = getenv("OLDPWD");
+        if (d == NULL)
+        {
+            perror("cd");
+            return(-1);
+        }
+        _puts(d);
+    }
+    else
+    {
+        d 
+    }
 }
 
 int alias_func(g_data *info)

@@ -65,6 +65,9 @@ int cd_func(g_data *info);
 int alias_func(g_data *info);
 int help_func(g_data *info);
 int unalias_func(g_data *info);
+int builtin_setenv(const char *a, const char *e);
+int _envp(void);
+
 
 // misc.d
 char **init_g_data(g_data *info, char **av, char **env);
@@ -83,7 +86,7 @@ char* surround_with_quotes(const char* str);
 int contains_quotes(const char* str);
 // aliases.c
 int set_alias(g_data *info);
-int is_valid_alias(char *s);
+int is_vailid_alias(char *s);
 l_node *find_alias(g_data *info, int idx);
 void perform_alias_insert(g_data *info, char **data, char **sd);
 // void check_alias(char *s);

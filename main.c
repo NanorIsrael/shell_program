@@ -135,18 +135,18 @@ ssize_t handle_builtins(g_data *info)
     if (info->arguments[0])
     {
         for (idx = 0; cbuiltins[idx].name; idx++)
-    {
-        if (strcmp(cbuiltins[idx].name, info->arguments[0]) == 0)
         {
             if (strcmp(cbuiltins[idx].name, info->arguments[0]) == 0)
             {
-                // todo some counter
-                result = cbuiltins[idx].handler(info);
-                break;
+                if (strcmp(cbuiltins[idx].name, info->arguments[0]) == 0)
+                {
+                    // todo some counter
+                    result = cbuiltins[idx].handler(info);
+                    break;
+                }
             }
         }
-    }
-        
+    } 
     return (result);
 }
 
@@ -240,8 +240,6 @@ ssize_t is_shell_interactive()
 {
     return isatty(STDIN_FILENO);
 }
-<<<<<<< HEAD
-=======
 
 // char *path_finder(g_data *info)
 // {
@@ -277,4 +275,3 @@ char* sh_read_line() {
     }
     return line;
 }
->>>>>>> ef61478 (Resolve memory leaks with aliases)

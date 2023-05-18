@@ -63,12 +63,15 @@ char *_getenv(const char *name, char **_environ);
 int exit_func(g_data *info);
 int cd_func(g_data *info);
 int alias_func(g_data *info);
+int help_func(g_data *info);
+int unalias_func(g_data *info);
 
 // misc.d
 char **init_g_data(g_data *info, char **av, char **env);
 void free_all(g_data *);
 ssize_t is_shell_interactive();
 int parseline(const char *cmdline, char **argv);
+char *path_finder(g_data *info);
 
 
 // string helpers
@@ -91,6 +94,12 @@ void insert_at_end(l_node **head, const char *str, const char *sub_data);
 // linkedlist.c
 void print_list(struct node *head);
 void freeList(l_node **head);
-void _help(g_data *info);
 void _prerror(char *e);
 void _puts(const char *s);
+void _putchar(char c);
+
+// parser.c
+char *find_command_path(const char * command);
+
+// main
+char *sh_read_line();

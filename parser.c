@@ -170,7 +170,8 @@ char* sanitize_string(char* str) {
     sanitized_str[j] = '\0'; // Null-terminate the string
     return sanitized_str;
 }
-char* sanitize_string2(char* str) {
+
+char *sanitize_string2(char* str) {
     int len = strlen(str);
     char sanitized_str[(len * 2) +1];
     
@@ -185,5 +186,5 @@ char* sanitize_string2(char* str) {
     }
     sanitized_str[j] = '\0'; // Null-terminate the string
 
-    return sanitized_str;
+    return strdup(sanitized_str);
 }

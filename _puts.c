@@ -14,4 +14,10 @@ void _puts(const char *s)
         _putchar('\n');
 }
 
+void _putchar(char c)
+{
+        if (!c)
+                return;
 
+        write(STDOUT_FILENO, &c, 1);
+}

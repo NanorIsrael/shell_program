@@ -1,5 +1,7 @@
 #include "main.h"
 
+const int PATH_MAX = 128;
+
 int exit_func(g_data *info)
 {
         char *u;
@@ -25,7 +27,7 @@ int exit_func(g_data *info)
 int cd_func(g_data *info)
 {
     char *d, *n, *c;
-    if(info->command == NULL)
+    if(info->arguments[1] == NULL)
     {
         d = getenv("HOME");
         if (d == NULL)
@@ -34,7 +36,7 @@ int cd_func(g_data *info)
             return(-1);
         }
     }
-    else if (strcmp(info->command, "-")== 0)
+    else if (strcmp(info->arguments[1], "-") == 0)
     {
         d = getenv("OLDPWD");
         if (d == NULL)
@@ -42,33 +44,30 @@ int cd_func(g_data *info)
             perror("cd");
             return(-1);
         }
-        _puts(d);
+        // _puts(d);
+        printf("%s\n", d);
     }
     else
     {
-        d = info->command;
+        // d = info->command;
+        n = malloc(PATH_MAX);
+        getcwd(n, PATH_MAX);
+        setenv("OLDPWD", n, 1);
+        free(n);
+        if (chdir(info->arguments[1]))
+        {
+            // display similar error as sh
+            perror("cd");
+            return(-1);
+        }
+        c = malloc(PATH_MAX +5);
+        getcwd(c, PATH_MAX);
+        setenv("PWD", c, 1);
+        free(c);
     }
 
-<<<<<<< HEAD
-    n = malloc(PATH_MAX);
-    getcwd(n, PATH_MAX);
-    setenv("OLDPWD", n, 1);
-    free(n);
-    if (chdir(d == -1))
-    {
-        perror("chdir");
-        return(-1);
-    }
-    c = malloc(PATH_MAX +5);
-    getcwd(c, PATH_MAX);
-    setenv("PWD", c, 1);
-    free(c);
-    return(0);
-=======
     return(1);
->>>>>>> ef61478 (Resolve memory leaks with aliases)
 }
-
 int alias_func(g_data *info)
 {
     char *alias;
@@ -107,7 +106,7 @@ int alias_func(g_data *info)
     return (1);
 }
 
-void _help(g_data *info)
+int _help(g_data *info)
 {
     _puts("Simple Shell");
     _puts("builtin commands avaiable are:");
@@ -115,10 +114,7 @@ void _help(g_data *info)
     _puts("cd - Used to change directory");
     _puts("help - Gives lists of command s available");
     _puts("setenv - Initialize a new environment variable");
-<<<<<<< HEAD
-=======
 
     return (1);
->>>>>>> ef61478 (Resolve memory leaks with aliases)
 }
 

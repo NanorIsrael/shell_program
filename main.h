@@ -82,7 +82,7 @@ int contains_quotes(const char* str);
 int set_alias(g_data *info);
 int is_valid_alias(char *s);
 l_node *find_alias(g_data *info, int idx);
-void perform_alias_insert(g_data *info, char *data, char *sd);
+void perform_alias_insert(g_data *info, char **data, char **sd);
 // void check_alias(char *s);
 
 // add_node.c

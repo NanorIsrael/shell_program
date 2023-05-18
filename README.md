@@ -11,6 +11,8 @@ a c shell program
 - Can not handle file manipulations
 
 - aliases, builtins and the environment
+- No piping or redirection
+- No globbing
 
 # Bugs
 - Handle echo "/bin/ls" | ./hsh
@@ -19,7 +21,8 @@ a c shell program
 - bash: alias: {aliasname}: not found
 - unalias
 - using quoted command like 'ls'
-
+- unalias: usage: unalias [-a] name [name ...]
+-
 # Test suit
 consult make file (not an exhustive list)
 

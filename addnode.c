@@ -19,7 +19,6 @@
 		free(new);
 		return;
 	}
-
 	
 	new->data = strdup(str);
 	new->sub_data = sub_data ? strdup(sub_data) : "\'\'";
@@ -34,7 +33,6 @@
 	temp = *head;
 	if (*head == NULL)
 	{
-		// new->id = 0;
 		*head = new;
 	}
 	else 

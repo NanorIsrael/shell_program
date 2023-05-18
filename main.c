@@ -85,6 +85,7 @@ ssize_t exec_cmd(g_data *info, char *path)
     }
     else {
         wait(&status);
+        // check waitpid
 
         if (WIFEXITED(status))
         {
@@ -96,7 +97,7 @@ ssize_t exec_cmd(g_data *info, char *path)
         }
     }
 
-    return (0);
+    return (1);
 }
 
 /**
@@ -137,24 +138,23 @@ ssize_t handle_builtins(g_data *info)
     {
         if (strcmp(cbuiltins[idx].name, info->arguments[0]) == 0)
         {
-            // todo some counter
-            result = cbuiltins[idx].handler(info);
-            break;
+            if (strcmp(cbuiltins[idx].name, info->arguments[0]) == 0)
+            {
+                // todo some counter
+                result = cbuiltins[idx].handler(info);
+                break;
+            }
         }
     }
-    }
-    else
-        result = 0;
-
-
+        
     return (result);
 }
 
 void cmd_handler(g_data *info)
 {
-    int str_size, i = 0, ret = 0;
+    int str_size, i = 0, ret = 1, debugger= 0; 
 
-    while (ret != -2 && info->is_interactive)
+    while (ret == 1 && info->is_interactive)
     {
         info->is_interactive = is_shell_interactive();
         if (info->is_interactive == 1)
@@ -163,8 +163,11 @@ void cmd_handler(g_data *info)
             fflush(stdout);
         }
 
-        fgets((info->command), sizeof(info->command), stdin);
         fflush(stdin);
+        // fgets((info->command), sizeof(info->command), stdin);
+    //    if (strcmp(sh_read_line(), ""));
+        
+        strcpy(info->command, sh_read_line());
 
 
         // if(strlen(info->command) > 0)
@@ -173,39 +176,40 @@ void cmd_handler(g_data *info)
             if ( str_size > 0 && info->command[str_size - 1] == '\n') {
             info->command[str_size - 1] = '\0';
         }
-            parseCommand(info);
-        // }
-        // else {
-        //     ret = 0;
-        // }
-        // parseline(info->command, info->arguments);
-        // printf("One love %s\n", info->arguments[0]);
+        parseCommand(info);
 
         // // implement builtins here
         ret = handle_builtins(info);
-        if (ret == -1)
-        {
-            printf("got here\n");
-            // char* commandPath =  findCommandPath(info->arguments[0]);
 
-            // if (commandPath != NULL) {
-            //     printf("Command path: %s\n", commandPath);
-            //     exec_cmd(info, commandPath);
+        if (ret == -1) 
+        {    
+            if (strlen(info->command) == 0) 
+            {
+                ret = 1;
+                continue;
+            }
+            
+            char *commandPath = find_command_path(info->command);
 
-            //     free(commandPath);
-            // }
-            // else {
-            //     if (info->arguments[0][0] == '/' && is_cmd(info->arguments[0]) == 1)
-            //     {
-            //         exec_cmd(info, info->arguments[0]);
-            //         free(commandPath);
-            //     }
-            //     else
-            //     {
-            //         // check if is an alias and execute here
-            //         p_error(info);
-            //     }
-            // }
+            if (commandPath != NULL) {
+                printf("Command path: %s\n", commandPath);
+                ret = exec_cmd(info, commandPath);
+                
+                free(commandPath);
+            }
+            else {
+                    if (info->arguments[0][0] == '/' && is_cmd(info->arguments[0]) == 1)
+                    {
+                        ret = exec_cmd(info, info->arguments[0]);
+                        free(commandPath);
+                    }
+                    else
+                    {
+                        // check if is an alias and execute here
+                        p_error(info);
+                        ret = 1;
+                    }   
+            }
         }
 
         // if (is_shell_interactive() != 0)
@@ -217,6 +221,7 @@ void cmd_handler(g_data *info)
 
     }
     printf("Enter a command to %d\n", ret);
+
     free_all(info);
     atexit(report_mem_leak);
 }
@@ -235,3 +240,41 @@ ssize_t is_shell_interactive()
 {
     return isatty(STDIN_FILENO);
 }
+<<<<<<< HEAD
+=======
+
+// char *path_finder(g_data *info)
+// {
+//     l_node *alias;
+//     char *cmd;
+
+//     // alias = find_alias(info, 0);
+
+//     // if(alias)
+//     //     cmd = (sanitize_string2(alias->sub_data));
+//     // else
+//     //     cmd = info->command;
+
+//     printf("the command %s\n", cmd);
+//     return ());
+// }
+
+char* sh_read_line() {
+    char *line = NULL;
+    size_t buflen = 0;
+
+    if (getline(&line, &buflen, stdin) == -1)
+    {
+        if (feof(stdin))
+        {
+            perror("getline");
+            exit(EXIT_SUCCESS);
+        }
+        else
+        {
+            exit(EXIT_FAILURE);
+        }
+    }
+    return line;
+}
+>>>>>>> ef61478 (Resolve memory leaks with aliases)

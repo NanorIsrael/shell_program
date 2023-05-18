@@ -3,21 +3,25 @@
 void parseCommand(g_data *info)
 {
     int argIndex = 0, idx = 0;
-    char *token, *rest;
+    char *token, *rest, *alias_cmd;
     char *quote = "\"'";
-    char *delim = " \t\n\r";
+    char *delim = " \t\n\r\a";
+    l_node *alias;
     info->number_of_args = 0;
     // const char *dupstr = strdup(info->command);
         if (strchr(quote, info->command[0]))
         {
             rest = sanitize_string2(info->command);
             token = strtok(rest, delim);
-            free(rest);
+
+            // free(rest);
         }
         else
         {
             rest = info->command;
             token = strtok(rest, delim);
+
+            // free(rest);
         }
 
     while (token != NULL)
@@ -30,7 +34,8 @@ void parseCommand(g_data *info)
     info->arguments[argIndex] = NULL;   
 }
 
-char* findCommandPath(const char* command) {
+char* find_command_path(const char * command) 
+{
     char* pathEnv = getenv("PATH"); // Get the value of the PATH environment variable
 
     // Make a copy of pathEnv since strtok modifies the original string
@@ -167,11 +172,8 @@ char* sanitize_string(char* str) {
 }
 char* sanitize_string2(char* str) {
     int len = strlen(str);
-    char* sanitized_str = malloc(len * 2 + 1); // Allocate enough space for worst case scenario (every character is a quote)
-    if (sanitized_str == NULL) {
-        fprintf(stderr, "Error: Could not allocate memory for sanitized string.\n");
-        return NULL;
-    }
+    char sanitized_str[(len * 2) +1];
+    
     int j = 0;
     for (int i = 0; i < len; i++) {
         if (str[i] == '\'' || str[i] == '\"' || str[i] == '\\') {
@@ -182,5 +184,6 @@ char* sanitize_string2(char* str) {
         sanitized_str[j++] = str[i];
     }
     sanitized_str[j] = '\0'; // Null-terminate the string
+
     return sanitized_str;
 }

@@ -1,25 +1,46 @@
 #include "main.h"
 
 
-// void unalias(g_data *info, char *s)
-// {
-//     l_node *tmp;
+int unalias_func(g_data *info)
+{
+    l_node *tmp, *prev;
+    int idx = 1, result = 0;
 
-//     tmp = info->alias_db;
-//     while (tmp != NULL)
-//     {
-//             if (strcmp(info->arguments[idx], tmp->data) == 0)
-//             {
-//                 return tmp;
-//             }
-//             tmp = tmp->next;
-//     }
-// }
+    if (info->arguments[1])
+    {
+        tmp = info->alias_db;
+
+        while (info->arguments[idx] != NULL)
+        {
+            while (tmp != NULL)
+            {
+                prev = tmp;
+                if (strcmp(info->arguments[idx], tmp->data) == 0)
+                {
+                    prev->next = tmp->next;
+                    // tmp = prev
+                    free(tmp->data);
+                    free(tmp->sub_data);
+                    // free(tmp);
+                    break;
+                }
+                tmp = tmp->next;
+            }
+            idx++;
+        }
+    }
+    else{
+        printf("unalias: usage: unalias [-a] name [name ...]\n");
+        // return (0);
+    }
+ 
+    return (1);
+}
 
 int set_alias(g_data *info)
 {
     int idx = 1, excess_count = 0;
-    char *token, *alias, *cmd, *arg_check;
+    char *token, *alias, *cmd, *arg_check, *temp;
     char *ensure_full_alias[100], *token_copy;
 
     // info->arguments[info->number_of_args - 1] = NULL;
@@ -63,7 +84,13 @@ int set_alias(g_data *info)
         }
         ensure_full_alias[excess_count] = NULL;
 
-        cmd = malloc(sizeof(char *) * 1024);
+        temp = malloc(sizeof(char *) * 32);
+        if (temp == NULL)
+        {
+            free(temp);
+            return (0);
+        }
+        cmd = temp;
         for (int j= 0; j < excess_count - 1; j++)
         {
             alias = strdup(ensure_full_alias[j]);
@@ -88,16 +115,21 @@ int set_alias(g_data *info)
             }
         }
             if (!cmd)
-                perform_alias_insert(info, alias, NULL);
+                {
+                    perform_alias_insert(info, &alias, NULL);
                 // insert_at_end(&(info->alias_db), alias, NULL);
-        
+                }
             else
-                perform_alias_insert(info, alias, cmd);
+            {
+                 perform_alias_insert(info, &alias, &cmd);
+            }
 
         excess_count = 0;
         idx++;
-    }
 
+        free(cmd);
+        free(temp);
+    }
     return (1);
 }
 
@@ -174,7 +206,7 @@ l_node *find_alias(g_data *info, int idx)
     return (NULL);
 }
 
-void perform_alias_insert(g_data *info, char *data, char *sd)
+void perform_alias_insert(g_data *info, char **data, char **sd)
 {
     l_node *tmp;
 
@@ -183,15 +215,15 @@ void perform_alias_insert(g_data *info, char *data, char *sd)
         {
             while (tmp != NULL)
             {
-                if (strcmp(data, tmp->data) == 0)
+                if (strcmp(*data, tmp->data) == 0)
                 {
-                        tmp->data = data;
-                        tmp->sub_data = sd ? sd : "'\'\'";
+                        tmp->data = *data;
+                        tmp->sub_data = *sd ? *sd : "'\'\'";
                         break;
                 }
                 else if(tmp->next == NULL)
                 {                    
-                    insert_at_end(&(info->alias_db), data, sd);
+                    insert_at_end(&(info->alias_db), *data, *sd);
                 }
                
                 tmp = tmp->next;
@@ -199,6 +231,9 @@ void perform_alias_insert(g_data *info, char *data, char *sd)
         }
         else
         {
-            insert_at_end(&(info->alias_db), data, sd);
+            insert_at_end(&(info->alias_db), *data, *sd);
         }
+
+        // free(*data);
+        // free(*sd);
 }

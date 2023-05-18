@@ -5,16 +5,21 @@ int exit_func(g_data *info)
         char *u;
         int status;
 
-        u = strtok(info + 4, " ");
-        if (u != NULL)
+        if (info->arguments[1] != NULL)
         {
-                status = _atoi(u);
+                 u = strtok(info->arguments[1] + 4, " ");
+                status = atoi(u);
                 exit(status);
         }
         else
         {
-                exit(0);
+                // exit(0);
+                //  free_all(g_data *info)
+                //  free_all(info);
+
+                return 0;
         }
+    return (0);
 }
 
 int cd_func(g_data *info)
@@ -44,6 +49,7 @@ int cd_func(g_data *info)
         d = info->command;
     }
 
+<<<<<<< HEAD
     n = malloc(PATH_MAX);
     getcwd(n, PATH_MAX);
     setenv("OLDPWD", n, 1);
@@ -58,6 +64,9 @@ int cd_func(g_data *info)
     setenv("PWD", c, 1);
     free(c);
     return(0);
+=======
+    return(1);
+>>>>>>> ef61478 (Resolve memory leaks with aliases)
 }
 
 int alias_func(g_data *info)
@@ -95,7 +104,7 @@ int alias_func(g_data *info)
         }
     }
 
-    return (0);
+    return (1);
 }
 
 void _help(g_data *info)
@@ -106,5 +115,10 @@ void _help(g_data *info)
     _puts("cd - Used to change directory");
     _puts("help - Gives lists of command s available");
     _puts("setenv - Initialize a new environment variable");
+<<<<<<< HEAD
+=======
+
+    return (1);
+>>>>>>> ef61478 (Resolve memory leaks with aliases)
 }
 

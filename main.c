@@ -127,6 +127,8 @@ ssize_t handle_builtins(g_data *info)
         {"exit", exit_func},
         {"cd", cd_func},
         {"alias", alias_func},
+        {"unalias", unalias_func},
+        {"help", help_func},
         {NULL, NULL}
     };
 
@@ -166,9 +168,8 @@ void cmd_handler(g_data *info)
         fflush(stdin);
         // fgets((info->command), sizeof(info->command), stdin);
     //    if (strcmp(sh_read_line(), ""));
-        
+        // if ()
         strcpy(info->command, sh_read_line());
-
 
         // if(strlen(info->command) > 0)
         // {
@@ -176,19 +177,19 @@ void cmd_handler(g_data *info)
             if ( str_size > 0 && info->command[str_size - 1] == '\n') {
             info->command[str_size - 1] = '\0';
         }
+
+        if (strlen(info->command) == 0) 
+        {
+            ret = 1;
+            continue;
+        }
         parseCommand(info);
 
         // // implement builtins here
         ret = handle_builtins(info);
 
         if (ret == -1) 
-        {    
-            if (strlen(info->command) == 0) 
-            {
-                ret = 1;
-                continue;
-            }
-            
+        {     
             char *commandPath = find_command_path(info->command);
 
             if (commandPath != NULL) {
@@ -198,17 +199,20 @@ void cmd_handler(g_data *info)
                 free(commandPath);
             }
             else {
-                    if (info->arguments[0][0] == '/' && is_cmd(info->arguments[0]) == 1)
+                    if (info->arguments[0])
                     {
-                        ret = exec_cmd(info, info->arguments[0]);
-                        free(commandPath);
+                        if (info->arguments[0][0] == '/' && is_cmd(info->arguments[0]) == 1)
+                        {
+                            ret = exec_cmd(info, info->arguments[0]);
+                            free(commandPath);
+                        }
+                        else
+                        {
+                            // check if is an alias and execute here
+                            p_error(info);
+                            ret = 1;
+                        }   
                     }
-                    else
-                    {
-                        // check if is an alias and execute here
-                        p_error(info);
-                        ret = 1;
-                    }   
             }
         }
 

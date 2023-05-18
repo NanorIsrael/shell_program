@@ -24,7 +24,8 @@ a c shell program
 - unalias: usage: unalias [-a] name [name ...]
 -
 # Test suit
-consult make file (not an exhustive list)
+consult make file (not an exhustive list).
+- use checker.sh for now
 
 
 # Handle built-ins

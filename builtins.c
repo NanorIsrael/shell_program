@@ -9,6 +9,7 @@ int exit_func(g_data *info)
 
         if (info->arguments[1] != NULL)
         {
+            // Todo: check if is a valid digit
                  u = strtok(info->arguments[1] + 4, " ");
                 status = atoi(u);
                 exit(status);

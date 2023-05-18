@@ -86,7 +86,7 @@ char* surround_with_quotes(const char* str);
 int contains_quotes(const char* str);
 // aliases.c
 int set_alias(g_data *info);
-int is_vailid_alias(char *s);
+int is_valid_alias(char *s);
 l_node *find_alias(g_data *info, int idx);
 void perform_alias_insert(g_data *info, char **data, char **sd);
 // void check_alias(char *s);
@@ -106,3 +106,7 @@ char *find_command_path(const char * command);
 
 // main
 char *sh_read_line();
+
+//setenv
+int _existadd(char **env, char *buffer);
+int _setenv(const char *n, const char *val, int w);

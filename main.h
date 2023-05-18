@@ -38,6 +38,7 @@ typedef struct global_data {
     char **environ;
     l_node *alias_db;
     int number_of_args;
+    char *s_arg[MAX_ARGUMENTS];
 } g_data;
 
 typedef struct builtins {
@@ -76,6 +77,7 @@ void free_all(g_data *);
 ssize_t is_shell_interactive();
 int parseline(const char *cmdline, char **argv);
 char *path_finder(g_data *info);
+void semi_colon_hanler(char *input, char *tokens, char **fcommand);
 
 
 // string helpers

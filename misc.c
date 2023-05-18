@@ -35,3 +35,48 @@ char **init_g_data(g_data *info, char **av, char **env)
     
     return(NULL);
 }
+
+void semi_colon_hanler(char *input, char *tokens, char **fcommand)
+{
+    char *command[20];
+   
+    char *g_cmd, *ptr;
+    int idx=0;
+
+     while (tokens != NULL)
+    {
+        command[idx] = tokens;
+
+        tokens = strtok(NULL,  " \t\n\r\a");
+        idx++;
+    }
+    command[idx] = ";";
+    command[idx + 1] = NULL;
+
+   g_cmd = malloc(sizeof(char *) *idx + 10);
+   strcpy(g_cmd, "\"");
+
+    int j=0, m=0;
+    while (command[j] != NULL)
+    {
+
+         if ( strcmp(command[j], ";") == 0)
+            {
+                strcat(g_cmd, "\"");
+                fcommand[m] = strdup(g_cmd);
+                m++;
+                strcpy(g_cmd, "\"");
+            }
+            else 
+            {
+                strcat(g_cmd, command[j]);
+                strcat(g_cmd, " ");
+            }
+            j++;
+    }
+    fcommand[m] = NULL;
+
+     
+    free(g_cmd);
+    // return fcommand;
+}

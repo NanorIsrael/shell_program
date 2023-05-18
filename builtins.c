@@ -119,3 +119,44 @@ int help_func(g_data *info)
     return (1);
 }
 
+int builtin_setenv(const char *a, const char *e)
+{
+    int i = 1;
+    char *ev;
+    if (a == NULL || e == NULL)
+    {
+        perror("setenv");
+        return (-1);
+    }
+    ev = getenv(a);
+    if (ev != NULL)
+    {
+        i = 1;
+    }
+    else
+    {
+        i = 0;
+    }
+
+    if (_setenv(a, e, i) != 0)
+    {
+        perror("setenv");
+        return (-1);
+    }
+
+    return (0);
+}
+
+int _envp(void)
+{
+	char **env = environ;
+
+	while (*env)
+	{
+		write(STDOUT_FILENO, *env, _strlen(*env));
+		write(STDOUT_FILENO, "\n", 1);
+		env++;
+	}
+	return (0);
+}
+

@@ -45,7 +45,8 @@ typedef struct builtins {
     int (*handler)(g_data *);
 } csh_builtin;
 
-
+//environ
+extern char **environ;
 
 // parser.c
 void parseCommand(g_data *info);

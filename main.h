@@ -39,6 +39,7 @@ typedef struct global_data {
     l_node *alias_db;
     int number_of_args;
     char *s_arg[MAX_ARGUMENTS];
+    int counter;
 } g_data;
 
 typedef struct builtins {
@@ -76,7 +77,7 @@ char **init_g_data(g_data *info, char **av, char **env);
 void free_all(g_data *);
 ssize_t is_shell_interactive();
 int parseline(const char *cmdline, char **argv);
-char *path_finder(g_data *info);
+// char *path_finder(g_data *info);
 void semi_colon_hanler(char *input, char *tokens, char **fcommand);
 
 
@@ -109,7 +110,31 @@ char *find_command_path(const char * command);
 
 // main
 char *sh_read_line();
+int path_finder(g_data *info);
 
 //setenv
 int _existadd(char **env, char *buffer);
 int _setenv(const char *n, const char *val, int w);
+
+// strings_helper_ext.c
+int _strcmp(const char *s, const char *t);
+char *_strcpy(char *dest, char *src);
+char *_strdup(char *s);
+int _strlen(char *s);
+char *_strncat(char *t, const char *s, int n);
+char *_strcat(char *dest, const char *src);
+char *_strcat(char *dest, const char *src);
+
+// error_handler.c
+char *env_err(g_data *info);
+int error_handler(g_data *info, int err_val);
+char *atoi_rev(int n);
+int get_len(int n);
+char *path_126_err(g_data *info);
+char *not_found_err(g_data *info);
+char *get_cd_error(g_data *info);
+char *exit_shell_err(g_data *info);
+char *strcat_cd(g_data *info, char *msg, char *error, char *ver_str);
+
+
+

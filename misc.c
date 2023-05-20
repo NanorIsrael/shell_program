@@ -9,6 +9,7 @@ char **init_g_data(g_data *info, char **av, char **env)
     info->file_name = av[0];
     info->is_interactive = 1;
     info->number_of_args = 0;
+    info->counter = 1;
     info->alias_db = NULL;
     // info->alias_db->next = NULL;
     // info->command = malloc(sizeof(1024));;

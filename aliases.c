@@ -223,7 +223,7 @@ void perform_alias_insert(g_data *info, char **data, char **sd)
                 }
                 else if(tmp->next == NULL)
                 {                    
-                    insert_at_end(&(info->alias_db), *data, *sd);
+                    insert_at_end(&(info->alias_db), strdup(*data), strdup(*sd));
                 }
                
                 tmp = tmp->next;
@@ -231,7 +231,7 @@ void perform_alias_insert(g_data *info, char **data, char **sd)
         }
         else
         {
-            insert_at_end(&(info->alias_db), *data, *sd);
+            insert_at_end(&(info->alias_db), strdup(*data), strdup(*sd));
         }
 
         // free(*data);

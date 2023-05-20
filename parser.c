@@ -14,7 +14,6 @@ void parseCommand(g_data *info)
         if (strchr(quote, info->command[0]))
         {
             alias = find_alias(info, 0);
-
             if(alias)
                 strcpy(info->command, alias->sub_data);
             
@@ -24,6 +23,7 @@ void parseCommand(g_data *info)
         else
         {
             alias = find_alias(info, 0);
+            // printf("the subdata%s\n", alias->data);
 
             if(alias)
                 strcpy(info->command, sanitize_string2(alias->sub_data));

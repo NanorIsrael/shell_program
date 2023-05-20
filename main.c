@@ -183,6 +183,7 @@ void cmd_handler(g_data *info)
             ret = 1;
             continue;
         }
+        
         parseCommand(info);
 
         // // implement builtins here

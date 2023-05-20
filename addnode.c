@@ -19,7 +19,6 @@
 		free(new);
 		return;
 	}
-	
 	new->data = strdup(str);
 	new->sub_data = sub_data ? strdup(sub_data) : "\'\'";
 	new->next = NULL;

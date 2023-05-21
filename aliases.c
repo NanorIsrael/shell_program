@@ -40,29 +40,15 @@ int unalias_func(g_data *info)
 int set_alias(g_data *info)
 {
     int idx = 1, excess_count = 0;
-    char *token, *alias, *cmd, *arg_check, *temp;
-    char *ensure_full_alias[100], *token_copy;
+    char *token, *arg_check, *ensure_full_alias[100], *token_copy;
+    char **ptr;
 
-    // info->arguments[info->number_of_args - 1] = NULL;
     while (idx <= info->number_of_args && info->arguments[idx] != NULL)
     {
      
         if (contains_quotes(strdup(info->arguments[idx])))
         {
-            token_copy = malloc(sizeof(char *) * 1024);
-                strcpy(token_copy, info->arguments[idx]);
-                    idx++;
-                    while (info->arguments[idx] != NULL) {
-                        strcat(token_copy, " ");
-                        strcat(token_copy, info->arguments[idx]);
-
-                        if((strchr(info->arguments[idx], '\'')) || (strchr(info->arguments[idx], '\"')))
-                            break;
-
-                        idx++;
-                    }
-                    token = strtok(token_copy, "=");
-                    free(token_copy);
+           token_copier(info, &token, &idx);
         }
         else
         {
@@ -83,55 +69,56 @@ int set_alias(g_data *info)
             token= strtok(NULL, " \t\n");
         }
         ensure_full_alias[excess_count] = NULL;
+        ptr = ensure_full_alias;
+        process_alias(info, &ptr, &excess_count);
+        excess_count = 0;
+        idx++;     
+    }
+    return (1);
+}
+
+void process_alias(g_data *info, char ***aliases, int *excess_count)
+{
+        int j;
+        char *alias, *temp, *cmd;
 
         temp = malloc(sizeof(char *) * 32);
         if (temp == NULL)
         {
             free(temp);
-            return (0);
+            return;
         }
         cmd = temp;
-        for (int j= 0; j < excess_count - 1; j++)
+        for (j= 0; j < *excess_count - 1; j++)
         {
-            alias = strdup(ensure_full_alias[j]);
+            alias = strdup((*aliases)[j]);
             j++;
-            if (strlen(ensure_full_alias[j]) > 0 && contains_quotes(ensure_full_alias[j]))
+            if (strlen((*aliases)[j]) > 0 && contains_quotes((*aliases)[j]))
             {
-                strcpy(cmd, strdup(ensure_full_alias[j]));
+                strcpy(cmd, strdup((*aliases)[j]));
                 j++;
-                while(j < excess_count)
+                while(j < *excess_count)
                 {
                     strcat(cmd, " ");
-                    strcat(cmd, strdup(ensure_full_alias[j]));
+                    strcat(cmd, strdup((*aliases)[j]));
                     j++;
                 }
                 cmd = surround_with_quotes(sanitize_string2(cmd));
             }
             else
             {
-                cmd = strlen(ensure_full_alias[j]) > 0 ? 
-                surround_with_quotes(strdup(ensure_full_alias[j])) 
+                cmd = strlen((*aliases)[j]) > 0 ? surround_with_quotes(strdup((*aliases)[j])) 
                 : NULL;
             }
         }
             if (!cmd)
-                {
-                    perform_alias_insert(info, &alias, NULL);
-                // insert_at_end(&(info->alias_db), alias, NULL);
-                }
+                perform_alias_insert(info, &alias, NULL);
             else
-            {
-                 perform_alias_insert(info, &alias, &cmd);
-            }
-
-        excess_count = 0;
-        idx++;
-
+                perform_alias_insert(info, &alias, &(cmd));
         free(cmd);
         free(temp);
-    }
-    return (1);
 }
+
 
 int free_alias(const char *str)
 {
@@ -236,4 +223,32 @@ void perform_alias_insert(g_data *info, char **data, char **sd)
 
         // free(*data);
         // free(*sd);
+}
+
+int token_copier(g_data *info, char **token, int *idx)
+{
+    char *token_copy;
+
+    token_copy = malloc(sizeof(char *) * 1024);
+    if (!token_copy)
+    {
+        free(token_copy);
+        return (0);
+    }
+    strcpy(token_copy, info->arguments[*idx]);
+    (*idx)++;
+    while (info->arguments[*idx] != NULL) 
+    {
+        strcat(token_copy, " ");
+        strcat(token_copy, info->arguments[*idx]);
+
+        if((strchr(info->arguments[*idx], '\'')) || (strchr(info->arguments[*idx], '\"')))
+            break;
+
+           (*idx)++;
+    }
+    *token = strtok(token_copy, "=");
+    free(token_copy);
+
+    return (*idx);
 }

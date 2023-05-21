@@ -1,18 +1,13 @@
 #include "main.h"
 
-int main(int ac __attribute__((unused)), char **av, char **env)
+int main(int c, char **av, char **env)
 {
     g_data info;
 
-    ac++;
-    // *av++;
-
-    // info.file_name = av[0];
-
-    // To Do:
-    // function to set_data(info)
     init_g_data(&info, av, env);
-    cmd_handler(&info);
+
+    cmd_handler(&info, c);
+    
 
     printf("Continuing my normal execution flow\n");
     // free_all(&info);
@@ -39,17 +34,23 @@ ssize_t exec_cmd(g_data *info, char *path)
         exit(EXIT_FAILURE);
     }
     else {
-        wait(&status);
+        // wait(&status);
         // check waitpid
 
-        if (WIFEXITED(status))
+        if (waitpid(pid, &status, WUNTRACED)  == -1)
         {
             printf("Child process exited with status: %d\n", WEXITSTATUS(status));
+            perror("wait");
+            exit(EXIT_FAILURE);
         }
-        else
+        if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
         {
             printf("Child process terminated abnormally\n");
+            fprintf(stderr, "Error: Command execution failed\n");
         }
+        // do {
+		// 	wpd = waitpid(pd, &state, WUNTRACED);
+		// } while (!WIFEXITED(state) && !WIFSIGNALED(state));
     }
 
     return (1);
@@ -87,8 +88,6 @@ ssize_t handle_builtins(g_data *info)
         {NULL, NULL}
     };
 
-        // printf("this is commmand %s\n", info->command);
-        // printf("this is arg 0 %s\n", info->arguments[0]);
     if (info->arguments[0])
     {
         for (idx = 0; cbuiltins[idx].name; idx++)
@@ -107,60 +106,39 @@ ssize_t handle_builtins(g_data *info)
     return (result);
 }
 
-void cmd_handler(g_data *info)
+void cmd_handler(g_data *info, int c)
 {
-    int str_size, i = 0, ret = 1, debugger= 0; 
+    // printf("%d\n", c);
 
-    while (ret == 1 && info->is_interactive)
+    if (c == 1 && is_shell_interactive())
     {
-        info->is_interactive = is_shell_interactive();
-        if (info->is_interactive == 1)
-        {
-            write(STDOUT_FILENO, "$ " , 2);
-            fflush(stdout);
-        }
-
-        fflush(stdin);
-        strcpy(info->command, sh_read_line());
-     
-        str_size = strlen(info->command);
-            if ( str_size > 0 && info->command[str_size - 1] == '\n') {
-            info->command[str_size - 1] = '\0';
-        }
-
-        if (strlen(info->command) == 0) 
-        {
-            ret = 1;
-            continue;
-        }
-        
-        parseCommand(info);
-        ret = handle_builtins(info);
-        if (ret == -1) 
-        {     
-            ret = path_finder(info);
-        }
-        info->counter += 1;
+        process_interactive_commands(info);
     }
-    printf("Enter a command to %d\n", ret);
+    else if (c == 2)
+    {
+        FILE* fp = fopen(info->file, "r");
+        if (fp == NULL) {
+            perror("fopen");
+            exit(EXIT_FAILURE);
+        }
 
+        while (fgets(info->command, MAX_COMMAND_LENGTH, fp) != NULL) {
+            // Remove trailing newline character
+            info->command[strcspn(info->command, "\n")] = '\0';
+
+            find_and_exec_cmd(info);
+        }
+
+        fclose(fp);
+    }
+    else
+    {
+        fprintf(stderr, "Usage: %s [batch_file]\n", info->file_name);
+        exit(EXIT_FAILURE);
+    }
+    
     free_all(info);
     atexit(report_mem_leak);
-}
-
-
-
-void free_all(g_data *info)
-{
-
-    free(info->environ);
-    freeList(&(info->alias_db));
-    // free(info->arguments);
-}
-
-ssize_t is_shell_interactive()
-{
-    return isatty(STDIN_FILENO);
 }
 
 int path_finder(g_data *info)
@@ -210,4 +188,47 @@ char* sh_read_line() {
         }
     }
     return line;
+}
+
+void process_interactive_commands(g_data *info)
+{
+    int ret = 1, str_size;
+
+    while (ret == 1)
+    {
+        write(STDOUT_FILENO, "$ " , 2);
+        fflush(stdout);
+
+        strcpy(info->command, sh_read_line());
+        fflush(stdin);
+
+        str_size = strlen(info->command);
+        if ( str_size > 0 && info->command[str_size - 1] == '\n')
+        {
+            info->command[str_size - 1] = '\0';
+        }
+
+        if (strlen(info->command) == 0) 
+        {
+            ret = 1;
+            continue;
+        }
+        ret = find_and_exec_cmd(info);
+
+        info->counter += 1;
+    }
+    printf("Enter a command to %d\n", ret);
+}
+
+int find_and_exec_cmd(g_data *info)
+{
+    int ret = 0;
+
+    parseCommand(info);
+    ret = handle_builtins(info);
+     if (ret == -1) 
+    {     
+        ret = path_finder(info);
+    }
+    return (ret);
 }

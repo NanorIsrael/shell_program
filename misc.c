@@ -3,11 +3,9 @@
 char **init_g_data(g_data *info, char **av, char **env)
 {
     int idx;
-    // static char *array[MAX_COMMAND_LENGTH];
-    // char **tempenv = array;
 
     info->file_name = av[0];
-    info->is_interactive = 1;
+    info->file = av[1];
     info->number_of_args = 0;
     info->counter = 1;
     info->alias_db = NULL;
@@ -80,4 +78,18 @@ void semi_colon_hanler(char *input, char *tokens, char **fcommand)
      
     free(g_cmd);
     // return fcommand;
+}
+
+ssize_t is_shell_interactive()
+{
+    return isatty(STDIN_FILENO);
+}
+
+
+void free_all(g_data *info)
+{
+
+    free(info->environ);
+    freeList(&(info->alias_db));
+    // free(info->arguments);
 }

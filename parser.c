@@ -8,9 +8,7 @@ void parseCommand(g_data *info)
     char *delim = " \t\n\r\a";
     l_node *alias;
     info->number_of_args = 0;
-    // const char *dupstr = strdup(info->command);
-    // if ((strcmp(info->command[0], "")) == 0)
-    //     reti;
+ 
         if (strchr(quote, info->command[0]))
         {
             alias = find_alias(info, 0);
@@ -23,15 +21,12 @@ void parseCommand(g_data *info)
         else
         {
             alias = find_alias(info, 0);
-            // printf("the subdata%s\n", alias->data);
 
             if(alias)
                 strcpy(info->command, sanitize_string2(alias->sub_data));
             
             rest = info->command;
             token = strtok(rest, delim);
-
-            // free(rest);
         }
 
     while (token != NULL)
@@ -42,8 +37,6 @@ void parseCommand(g_data *info)
         info->number_of_args++;
     }
     info->arguments[argIndex] = NULL; 
-
-    // printf("I love debugging\n");
 }
 
 char* find_command_path(const char * command) 

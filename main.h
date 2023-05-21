@@ -22,8 +22,6 @@
 //     char *real_name;
 // } alias;
 
-// alias **alias_db[] = { NULL, NULL };
-
 typedef struct node {
     char *data;
     char *sub_data;
@@ -34,12 +32,12 @@ typedef struct global_data {
     char *file_name;
     char command[MAX_COMMAND_LENGTH];
     char *arguments[MAX_ARGUMENTS];
-    int   is_interactive;
     char **environ;
     l_node *alias_db;
     int number_of_args;
     char *s_arg[MAX_ARGUMENTS];
     int counter;
+    char *file;
 } g_data;
 
 typedef struct builtins {
@@ -56,7 +54,7 @@ char* findCommandPath(const char *command);
 void printPathDirectories();
 
 int is_cmd(char *path);
-void cmd_handler(g_data *info);
+void cmd_handler(g_data *info, int c);
 
 
 char *_getenv(const char *name, char **_environ);
@@ -77,23 +75,26 @@ char **init_g_data(g_data *info, char **av, char **env);
 void free_all(g_data *);
 ssize_t is_shell_interactive();
 int parseline(const char *cmdline, char **argv);
-// char *path_finder(g_data *info);
+int process_commands(g_data *info);
 void semi_colon_hanler(char *input, char *tokens, char **fcommand);
-
+void process_interactive_commands(g_data *info);
+int find_and_exec_cmd(g_data *info);
 
 // string helpers
 int _strlen(char *s);
 void _memcpy(void *dest, const void *src, unsigned int n);
 char* sanitize_string(char* str);
-char* sanitize_string2(char* str);
+char* sanitize_string2(char *str);
 char* surround_with_quotes(const char* str);
 int contains_quotes(const char* str);
+
 // aliases.c
 int set_alias(g_data *info);
 int is_valid_alias(char *s);
 l_node *find_alias(g_data *info, int idx);
 void perform_alias_insert(g_data *info, char **data, char **sd);
-// void check_alias(char *s);
+void process_alias(g_data *info, char ***k, int *excess_count);
+int token_copier(g_data *info, char **token, int *i);
 
 // add_node.c
 void insert_at_end(l_node **head, const char *str, const char *sub_data);

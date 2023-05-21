@@ -45,12 +45,9 @@ int cd_func(g_data *info)
             perror("cd");
             return(-1);
         }
-        // _puts(d);
-        printf("%s\n", d);
     }
     else
     {
-        // d = info->command;
         n = malloc(PATH_MAX);
         getcwd(n, PATH_MAX);
         setenv("OLDPWD", n, 1);
@@ -69,6 +66,7 @@ int cd_func(g_data *info)
 
     return(1);
 }
+
 int alias_func(g_data *info)
 {
     char *alias;

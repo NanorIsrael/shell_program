@@ -55,4 +55,6 @@ leak_info.txt
 .DS_Store
 test_concepts.c
 leak_detector/*
-hsh.*
+hsh
+.vscode/
+t

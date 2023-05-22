@@ -144,4 +144,8 @@ char *strcat_cd(g_data *info, char *msg, char *error, char *ver_str);
 void print_alias(l_node *tmp);
 void file_error(g_data *info);
 
+// strtok.c
+char *_strpbrk(const char *str, const char *set);
+char *_sttrtok(char *p, const char *delim);
+char *_getline(void);
 

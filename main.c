@@ -46,7 +46,7 @@ ssize_t exec_cmd(g_data *info, char *path)
         if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
         {
             printf("Child process terminated abnormally\n");
-            fprintf(stderr, "Error: Command execution failed\n");
+            _puts("Error: Command execution failed");
         }
         // do {
 		// 	wpd = waitpid(pd, &state, WUNTRACED);
@@ -133,7 +133,7 @@ void cmd_handler(g_data *info, int c)
     }
     else
     {
-        fprintf(stderr, "Usage: %s [batch_file]\n", info->file_name);
+        file_error();
         exit(EXIT_FAILURE);
     }
     
@@ -217,7 +217,6 @@ void process_interactive_commands(g_data *info)
 
         info->counter += 1;
     }
-    printf("Enter a command to %d\n", ret);
 }
 
 int find_and_exec_cmd(g_data *info)
@@ -231,4 +230,11 @@ int find_and_exec_cmd(g_data *info)
         ret = path_finder(info);
     }
     return (ret);
+}
+
+void file_error()
+{
+    _print_one_line("Usage: ");
+    _print_one_line(info->file_name);
+    _print_one_line(" [batch_file]\n");
 }

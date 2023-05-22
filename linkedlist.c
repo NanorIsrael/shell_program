@@ -34,7 +34,7 @@ void print_list(l_node *head)
 
 	while (ptr != NULL)
 	{
-		printf("%s\n", ptr->data);
+		_puts(ptr->data);
 		ptr = ptr->next;
 	}
 }

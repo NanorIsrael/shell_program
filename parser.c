@@ -71,31 +71,31 @@ char* find_command_path(const char * command)
     return NULL; // Command not found in any path
 }
 
-void printPathDirectories(char **environ) 
-{
-    char* path = 
-    // _getenv("PATH", environ);
+// void printPathDirectories(char **environ) 
+// {
+//     char* path = 
+//     // _getenv("PATH", environ);
 
-     getenv("PATH");
-    if (path == NULL) {
-        printf("PATH environment variable not set.\n");
-        return;
-    }
+//      getenv("PATH");
+//     if (path == NULL) {
+//         printf("PATH environment variable not set.\n");
+//         return;
+//     }
 
-    char* pathCopy = strdup(path);
-    if (pathCopy == NULL) {
-        perror("strdup");
-        return;
-    }
+//     char* pathCopy = strdup(path);
+//     if (pathCopy == NULL) {
+//         perror("strdup");
+//         return;
+//     }
 
-    char* token = strtok(pathCopy, ":");
-    while (token != NULL) {
-        printf("%s\n", token);
-        token = strtok(NULL, ":");
-    }
+//     char* token = strtok(pathCopy, ":");
+//     while (token != NULL) {
+//         printf("%s\n", token);
+//         token = strtok(NULL, ":");
+//     }
 
-    free(pathCopy);
-}
+//     free(pathCopy);
+// }
 
 
 /* 
@@ -161,7 +161,7 @@ char* sanitize_string(char* str) {
     int len = strlen(str);
     char* sanitized_str = malloc(len * 2 + 1); // Allocate enough space for worst case scenario (every character is a quote)
     if (sanitized_str == NULL) {
-        fprintf(stderr, "Error: Could not allocate memory for sanitized string.\n");
+        _eputs("Error: Could not allocate memory for sanitized string.\n");
         return NULL;
     }
     int j = 0;

@@ -21,3 +21,30 @@ void _putchar(char c)
 
         write(STDOUT_FILENO, &c, 1);
 }
+
+void _eputchar(char c)
+{
+        if (!c)
+                return;
+
+        write(STDERR_FILENO, &c, 1);
+}
+
+void _eputs(const char *s)
+{
+        while (*s != '\0')
+        {
+                _putchar(*s);
+                s++;
+        }
+        _putchar('\n');
+}
+
+void _print_one_line(const char *s)
+{
+        while (*s != '\0')
+        {
+                _putchar(*s);
+                s++;
+        }
+}

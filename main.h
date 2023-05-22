@@ -102,9 +102,13 @@ void insert_at_end(l_node **head, const char *str, const char *sub_data);
 // linkedlist.c
 void print_list(struct node *head);
 void freeList(l_node **head);
-void _prerror(char *e);
+
+// _puts(char *e);
 void _puts(const char *s);
 void _putchar(char c);
+void _eputchar(char c);
+void _eputs(const char *s);
+void _print_one_line(const char *s);
 
 // parser.c
 char *find_command_path(const char * command);
@@ -116,7 +120,6 @@ int path_finder(g_data *info);
 //setenv
 int _existadd(char **env, char *buffer);
 int _setenv(const char *n, const char *val, int w);
-
 // strings_helper_ext.c
 int _strcmp(const char *s, const char *t);
 char *_strcpy(char *dest, char *src);
@@ -137,5 +140,8 @@ char *get_cd_error(g_data *info);
 char *exit_shell_err(g_data *info);
 char *strcat_cd(g_data *info, char *msg, char *error, char *ver_str);
 
+// alias extended
+void print_alias(l_node *tmp);
+void file_error();
 
 

@@ -30,7 +30,7 @@ int unalias_func(g_data *info)
         }
     }
     else{
-        printf("unalias: usage: unalias [-a] name [name ...]\n");
+        _puts("unalias: usage: unalias [-a] name [name ...]");
         // return (0);
     }
  
@@ -141,7 +141,7 @@ char* surround_with_quotes(const char* str) {
     char* quoted_str = malloc(len + 3); // Allocate memory for the quoted string
 
     if (quoted_str == NULL) {
-        fprintf(stderr, "Error: Could not allocate memory for quoted string.\n");
+        _eputs("Error: Could not allocate memory for quoted string.");
         return NULL;
     }
 
@@ -169,7 +169,7 @@ int is_valid_alias(char *s)
     arg_check = strchr(s, '=');
     if (!arg_check)
     {
-        printf("sh: alias: %s: not found\n", s);
+        error_handler(127);
         return (0);
     }
 

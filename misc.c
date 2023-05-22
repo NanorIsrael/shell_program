@@ -18,7 +18,7 @@ char **init_g_data(g_data *info, char **av, char **env)
     info->environ = malloc(sizeof(char *) * (idx + 1));
     if (info->environ == NULL)
     {
-        printf("failed to initialize envs");
+        _puts("failed to initialize envs");
         exit(0);
     }
 

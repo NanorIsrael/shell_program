@@ -82,12 +82,13 @@ int alias_func(g_data *info)
                 {
                     tmp = find_alias(info, idx);
                     if (tmp)
-                        printf("%s=%s\n", tmp->data, tmp->sub_data);
+                    {
+                       print_alias(tmp);
+                    }
                     else
-                        printf("%s: alias: %s: not found\n", info->file_name, info->arguments[idx]);
+                        error_handler(info, 127);
                     idx++;
                 }
-
         }
         else
             set_alias(info);
@@ -97,7 +98,7 @@ int alias_func(g_data *info)
         tmp = info->alias_db;
         while (tmp != NULL)
         {
-            printf("%s=%s\n", tmp->data, tmp->sub_data);
+            print_alias(tmp);
             tmp = tmp->next;
         }
     }
@@ -158,3 +159,10 @@ int _envp(void)
 	return (0);
 }
 
+void print_alias(l_node *tmp)
+{
+    _print_one_line(tmp->data);
+    _print_one_line("=");
+    _print_one_line(tmp->sub_data);
+    _putchar('\n');
+}

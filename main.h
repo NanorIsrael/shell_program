@@ -90,7 +90,7 @@ int contains_quotes(const char* str);
 
 // aliases.c
 int set_alias(g_data *info);
-int is_valid_alias(char *s);
+int is_valid_alias(g_data *info, char *s);
 l_node *find_alias(g_data *info, int idx);
 void perform_alias_insert(g_data *info, char **data, char **sd);
 void process_alias(g_data *info, char ***k, int *excess_count);
@@ -142,6 +142,6 @@ char *strcat_cd(g_data *info, char *msg, char *error, char *ver_str);
 
 // alias extended
 void print_alias(l_node *tmp);
-void file_error();
+void file_error(g_data *info);
 
 

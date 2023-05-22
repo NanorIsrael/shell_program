@@ -52,7 +52,7 @@ int set_alias(g_data *info)
         }
         else
         {
-            if (is_valid_alias(info->arguments[idx]))
+            if (is_valid_alias(info, info->arguments[idx]))
                 token =  strtok(info->arguments[idx], "=");
             else
             {
@@ -162,14 +162,14 @@ int contains_quotes(const char* str) {
     return (strchr(str, '\"') != NULL) || (strchr(str, '\'') != NULL);
 }
 
-int is_valid_alias(char *s)
+int is_valid_alias(g_data *info, char *s)
 {
     char *arg_check;
 
     arg_check = strchr(s, '=');
     if (!arg_check)
     {
-        error_handler(127);
+        error_handler(info, 127);
         return (0);
     }
 

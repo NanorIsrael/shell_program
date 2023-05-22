@@ -92,9 +92,9 @@ ssize_t handle_builtins(g_data *info)
     {
         for (idx = 0; cbuiltins[idx].name; idx++)
         {
-            if (strcmp(cbuiltins[idx].name, info->arguments[0]) == 0)
+            if (_strcmp(cbuiltins[idx].name, info->arguments[0]) == 0)
             {
-                if (strcmp(cbuiltins[idx].name, info->arguments[0]) == 0)
+                if (_strcmp(cbuiltins[idx].name, info->arguments[0]) == 0)
                 {
                     // todo some counter
                     result = cbuiltins[idx].handler(info);
@@ -133,7 +133,7 @@ void cmd_handler(g_data *info, int c)
     }
     else
     {
-        file_error();
+        file_error(info);
         exit(EXIT_FAILURE);
     }
     
@@ -232,7 +232,7 @@ int find_and_exec_cmd(g_data *info)
     return (ret);
 }
 
-void file_error()
+void file_error(g_data *info)
 {
     _print_one_line("Usage: ");
     _print_one_line(info->file_name);

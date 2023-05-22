@@ -48,3 +48,11 @@ void _print_one_line(const char *s)
                 s++;
         }
 }
+void _eprint_one_line(const char *s)
+{
+        while (*s != '\0')
+        {
+                _eputchar(*s);
+                s++;
+        }
+}

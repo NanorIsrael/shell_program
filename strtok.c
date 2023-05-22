@@ -56,47 +56,45 @@ char *_sttrtok(char *p, const char *delim)
     return (NULL);
 }
 
-char *_getline(void)
+int _getline(char **line, size_t len, int fd)
 {
-    static char w[MAX_COMMAND_LENGTH];
-    static int iy = 0;
-    static int ne = 0;
+    int i = 0;
+    size_t buffer_size = len;
+    char *buff = *line;
+    int bufffer_allocated = 0;
 
-    char c, *l = NULL;
-    int ll = 0;
-    l = (char *)malloc((MAX_COMMAND_LENGTH + 1) * sizeof(char));
+    if (line == NULL)
+        return -1;
 
-    while (1)
+    if (buff == NULL)
     {
-        if (iy >= ne)
+        bufffer_allocated = 1;
+        buffer_size  = 128;
+        buff = malloc(sizeof(char *) * buffer_size);
+        if (buff == NULL)
+            return -1;
+    }
+    while (((read(fd, &buff[i], 1)) > 0) && buff[i] != '\n')
+    {
+        i++;
+        if (i > buffer_size -1)
         {
-            iy = 0;
-            ne = read(STDIN_FILENO, w, MAX_COMMAND_LENGTH);
-            if (ne <= 0)
+            char *nb = realloc(buff, sizeof(char *) * (buffer_size * 2));
+            if (nb == NULL)
             {
-                if (ll > 0)
-                {
-                    break;
-                }
-                else
-                {
-                    free(l);
-                    return (NULL);
-                }
+                free(nb);
+                return -1;
             }
-        }
-
-        c = w[iy++];
-        if (l == NULL)
-        {
-            return (NULL);
-        }
-        l[ll++] = c;
-        if (c == '\n' || c == EOF)
-        {
-            break;
+            buff = nb;
         }
     }
-    l[ll] = '\0';
-    return (l);
+    buff[i] = '\0';
+    *line = buff;
+
+    if (bufffer_allocated == 1)
+        free(buff);
+
+    return (i);
 }
+
+

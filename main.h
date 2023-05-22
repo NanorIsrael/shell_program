@@ -1,12 +1,17 @@
+#ifndef MAIN_H
+#define MAIN_H
+
 // i/o and parsing command libs
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <errno.h>
 
 // forking child process libs
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <fcntl.h>
 
 // stat
 #include <sys/stat.h>
@@ -16,6 +21,7 @@
 
 #define MAX_COMMAND_LENGTH 1024
 #define MAX_ARGUMENTS 128
+#define PATH_MAX 128
 
 // typedef struct aliases {
 //     char *alias_name;
@@ -38,6 +44,7 @@ typedef struct global_data {
     char *s_arg[MAX_ARGUMENTS];
     int counter;
     char *file;
+    int readfd;
 } g_data;
 
 typedef struct builtins {
@@ -56,7 +63,7 @@ void printPathDirectories();
 int is_cmd(char *path);
 void cmd_handler(g_data *info, int c);
 
-
+// env
 char *_getenv(const char *name, char **_environ);
 
 
@@ -114,8 +121,9 @@ void _print_one_line(const char *s);
 char *find_command_path(const char * command);
 
 // main
-char *sh_read_line();
+char *sh_read_line(g_data *info);
 int path_finder(g_data *info);
+ssize_t handle_builtins(g_data *info);
 
 //setenv
 int _existadd(char **env, char *buffer);
@@ -147,5 +155,17 @@ void file_error(g_data *info);
 // strtok.c
 char *_strpbrk(const char *str, const char *set);
 char *_sttrtok(char *p, const char *delim);
-char *_getline(void);
+int _getline(char **line, size_t len, int fd);
 
+// error_ext.c
+int process_file_commands(g_data *info, int fd);
+void _eprint_one_line(const char *s);
+
+// string_helpers_aux.c
+char *_strcspn(char *str);
+int _atoi(const char *src);
+
+// 
+int process_non_interactive_commands(g_data *info);
+
+#endif

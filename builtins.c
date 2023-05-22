@@ -1,7 +1,5 @@
 #include "main.h"
 
-const int PATH_MAX = 128;
-
 int exit_func(g_data *info)
 {
         char *u;
@@ -10,8 +8,8 @@ int exit_func(g_data *info)
         if (info->arguments[1] != NULL)
         {
             // Todo: check if is a valid digit
-                 u = strtok(info->arguments[1] + 4, " ");
-                status = atoi(u);
+                 u = _sttrtok(info->arguments[1] + 4, " ");
+                status = _atoi(u);
                 exit(status);
         }
         else
@@ -30,7 +28,7 @@ int cd_func(g_data *info)
     char *d, *n, *c;
     if(info->arguments[1] == NULL)
     {
-        d = getenv("HOME");
+        d = _getenv("HOME", info->environ);
         if (d == NULL)
         {
             perror("cd");
@@ -39,7 +37,7 @@ int cd_func(g_data *info)
     }
     else if (strcmp(info->arguments[1], "-") == 0)
     {
-        d = getenv("OLDPWD");
+        d = _getenv("OLDPWD", info->environ);
         if (d == NULL)
         {
             perror("cd");
@@ -50,7 +48,7 @@ int cd_func(g_data *info)
     {
         n = malloc(PATH_MAX);
         getcwd(n, PATH_MAX);
-        setenv("OLDPWD", n, 1);
+        _setenv("OLDPWD", n, 1);
         free(n);
         if (chdir(info->arguments[1]))
         {
@@ -60,7 +58,7 @@ int cd_func(g_data *info)
         }
         c = malloc(PATH_MAX +5);
         getcwd(c, PATH_MAX);
-        setenv("PWD", c, 1);
+        _setenv("PWD", c, 1);
         free(c);
     }
 
@@ -157,12 +155,4 @@ int _envp(void)
 		env++;
 	}
 	return (0);
-}
-
-void print_alias(l_node *tmp)
-{
-    _print_one_line(tmp->data);
-    _print_one_line("=");
-    _print_one_line(tmp->sub_data);
-    _putchar('\n');
 }

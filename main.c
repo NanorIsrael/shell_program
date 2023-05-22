@@ -9,71 +9,9 @@ int main(int c, char **av, char **env)
     cmd_handler(&info, c);
     
 
-    printf("Continuing my normal execution flow\n");
+    // printf("Continuing my normal execution flow\n");
     // free_all(&info);
     // atexit(report_mem_leak);
-}
-
-ssize_t exec_cmd(g_data *info, char *path)
-{
-    int status;
-
-    const int pid = fork();
-
-    if (pid == -1)
-    {
-        perror("fork");
-        exit(EXIT_FAILURE);
-    }
-    else if (pid == 0)
-    {
-        execve(path, info->arguments, info->environ);
-        // execvp(path, info.arguments);
-
-        perror(info->file_name);
-        exit(EXIT_FAILURE);
-    }
-    else {
-        // wait(&status);
-        // check waitpid
-
-        if (waitpid(pid, &status, WUNTRACED)  == -1)
-        {
-            printf("Child process exited with status: %d\n", WEXITSTATUS(status));
-            perror("wait");
-            exit(EXIT_FAILURE);
-        }
-        if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
-        {
-            printf("Child process terminated abnormally\n");
-            _puts("Error: Command execution failed");
-        }
-        // do {
-		// 	wpd = waitpid(pd, &state, WUNTRACED);
-		// } while (!WIFEXITED(state) && !WIFSIGNALED(state));
-    }
-
-    return (1);
-}
-
-/**
- * is_cmd - determines if a file is an executable command
- * @path: path to the file
- *
- * Return: 1 if true, 0 otherwise
- */
-int is_cmd(char *path)
-{
-	struct stat st;
-
-	if (!path || stat(path, &st))
-		return (0);
-
-	if (st.st_mode & S_IFREG)
-	{
-		return (1);
-	}
-	return (0);
 }
 
 ssize_t handle_builtins(g_data *info)
@@ -106,76 +44,12 @@ ssize_t handle_builtins(g_data *info)
     return (result);
 }
 
-void cmd_handler(g_data *info, int c)
-{
-    // printf("%d\n", c);
 
-    if (c == 1 && is_shell_interactive())
-    {
-        process_interactive_commands(info);
-    }
-    else if (c == 2)
-    {
-        FILE* fp = fopen(info->file, "r");
-        if (fp == NULL) {
-            perror("fopen");
-            exit(EXIT_FAILURE);
-        }
-
-        while (fgets(info->command, MAX_COMMAND_LENGTH, fp) != NULL) {
-            // Remove trailing newline character
-            info->command[strcspn(info->command, "\n")] = '\0';
-
-            find_and_exec_cmd(info);
-        }
-
-        fclose(fp);
-    }
-    else
-    {
-        file_error(info);
-        exit(EXIT_FAILURE);
-    }
-    
-    free_all(info);
-    atexit(report_mem_leak);
-}
-
-int path_finder(g_data *info)
-{
-    int ret = 0;
-    char *commandPath = find_command_path(info->command);
-
-            if (commandPath != NULL) {
-                printf("Command path: %s\n", commandPath);
-                ret = exec_cmd(info, commandPath);
-                
-                free(commandPath);
-            }
-            else {
-                    if (info->arguments[0])
-                    {
-                        if (info->arguments[0][0] == '/' && is_cmd(info->arguments[0]) == 1)
-                        {
-                            ret = exec_cmd(info, info->arguments[0]);
-                            free(commandPath);
-                        }
-                        else
-                        {
-                            // check if is an alias and execute here
-                            error_handler(info, 127);
-                            ret = 1;
-                        }   
-                    }
-            }
-    return (ret);
-}
-
-char* sh_read_line() {
+char* sh_read_line(g_data *info) {
     char *line = NULL;
-    size_t buflen = 0;
+    static size_t buflen = 0;
 
-    if (getline(&line, &buflen, stdin) == -1)
+    if (_getline(&line, buflen, info->readfd) == -1)
     {
         if (feof(stdin))
         {
@@ -192,22 +66,17 @@ char* sh_read_line() {
 
 void process_interactive_commands(g_data *info)
 {
-    int ret = 1, str_size;
+    int ret = 1;
 
     while (ret == 1)
     {
         write(STDOUT_FILENO, "$ " , 2);
         fflush(stdout);
 
-        strcpy(info->command, sh_read_line());
+        strcpy(info->command, sh_read_line(info));
         fflush(stdin);
 
-        str_size = strlen(info->command);
-        if ( str_size > 0 && info->command[str_size - 1] == '\n')
-        {
-            info->command[str_size - 1] = '\0';
-        }
-
+        _strcspn(info->command);
         if (strlen(info->command) == 0) 
         {
             ret = 1;
@@ -219,22 +88,49 @@ void process_interactive_commands(g_data *info)
     }
 }
 
-int find_and_exec_cmd(g_data *info)
+int process_file_commands(g_data *info, int fd)
+{
+    char *line = NULL;
+    static size_t len = 0;
+
+    info->readfd = fd;
+
+        if (fd == -1) {
+           if (errno == EACCES)
+				exit(126);
+			if (errno == ENOENT)
+			{
+				_eprint_one_line(info->file_name);
+				_eprint_one_line(": 0: Can't open ");
+				_eprint_one_line(info->file);
+				exit(127);
+			}
+			return (EXIT_FAILURE);
+        }
+
+        while (_getline(&line, len, fd)) {
+            _strcpy(info->command, line);
+            // Remove trailing newline character
+            _strcspn(info->command);
+
+            find_and_exec_cmd(info);
+        }
+
+    close(fd);
+    return (1);
+}
+
+int process_non_interactive_commands(g_data *info)
 {
     int ret = 0;
 
-    parseCommand(info);
-    ret = handle_builtins(info);
-     if (ret == -1) 
-    {     
-        ret = path_finder(info);
-    }
-    return (ret);
-}
+    info->readfd = 0;
 
-void file_error(g_data *info)
-{
-    _print_one_line("Usage: ");
-    _print_one_line(info->file_name);
-    _print_one_line(" [batch_file]\n");
+    strcpy(info->command, sh_read_line(info));
+    fflush(stdin);
+
+    _strcspn(info->command);
+    ret = find_and_exec_cmd(info);
+
+    return (ret);
 }

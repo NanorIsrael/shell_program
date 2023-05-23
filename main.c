@@ -5,13 +5,7 @@ int main(int c, char **av, char **env)
     g_data info;
 
     init_g_data(&info, av, env, c);
-
     cmd_handler(&info, c);
-    
-
-    // printf("Continuing my normal execution flow\n");
-    // free_all(&info);
-    // atexit(report_mem_leak);
 }
 
 

@@ -85,6 +85,7 @@ int process_commands(g_data *info);
 void semi_colon_hanler(char *input, char *tokens, char **fcommand);
 void process_interactive_commands(g_data *info);
 int find_and_exec_cmd(g_data *info);
+int _strncmp(const char *s, const char *t, size_t len);
 
 // string helpers
 int _strlen(char *s);
@@ -130,6 +131,8 @@ int _setenv(const char *n, const char *val, int w);
 int _envp(g_data *info);
 int _envp(__attribute__((unused)) g_data *info);
 int setenv_func(g_data *info);
+int unsetenv_func(g_data *info);
+int _unsetenv(g_data *info, char *var);
 
 // strings_helper_ext.c
 int _strcmp(const char *s, const char *t);

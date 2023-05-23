@@ -39,6 +39,7 @@ ssize_t handle_builtins(g_data *info)
         {"cd", cd_func},
         {"env", _envp},
         {"setenv", setenv_func},
+        {"unsetenv", unsetenv_func},
         {"alias", alias_func},
         {"unalias", unalias_func},
         {"help", help_func},
@@ -61,4 +62,23 @@ ssize_t handle_builtins(g_data *info)
         }
     } 
     return (result);
+}
+
+/**
+ * _strncmp - compares length of a string
+ * @s: string to compare
+ * @t: string to compare
+ * Return: Always zero
+ */
+
+int _strncmp(const char *s, const char *t, size_t len)
+{
+    int i = 0; 
+	while ((*s && (*s == *t)) && i < len)
+	{
+		++s;
+		++t;
+        i++;
+	}
+	return (*(const unsigned char *)s - *(const unsigned char *)t);
 }

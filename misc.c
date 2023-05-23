@@ -76,10 +76,7 @@ void semi_colon_hanler(char *input, char *tokens, char **fcommand)
             j++;
     }
     fcommand[m] = NULL;
-
-     
     free(g_cmd);
-    // return fcommand;
 }
 
 ssize_t is_shell_interactive()

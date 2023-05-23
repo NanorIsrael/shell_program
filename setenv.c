@@ -9,7 +9,7 @@
  */
 int setenv_func(g_data *info)
 {
-	if (info->argc != 3)
+	if (info->number_of_args != 3)
 	{
 		_eputs("Incorrect number of arguements");
 		return (0);
@@ -19,101 +19,67 @@ int setenv_func(g_data *info)
 	return (1);
 }
 
-// /**
-//  * unsetenv_func - Remove an environment variable
-//  * @info: Structure containing potential arguments. Used to maintain
-//  *        constant function prototype.
-//  *  Return: Always 0
-//  */
-// int unsetenv_func(g_data *info)
-// {
-// 	int i;
+/**
+ * unsetenv_func - Remove an environment variable
+ * @info: Structure containing potential arguments. Used to maintain
+ *        constant function prototype.
+ *  Return: Always 0
+ */
+int unsetenv_func(g_data *info)
+{
+	int i;
 
-// 	if (info->argc == 1)
-// 	{
-// 		_eputs("Too few arguements.");
-// 		return (0);
-// 	}
-// 	for (i = 1; i <= info->argc; i++)
-// 		_unsetenv(info, info->arguments[i]);
+	if (info->argc == 1)
+	{
+		_eputs("Too few arguements.");
+		return (0);
+	}
+	for (i = 1; i <= info->argc; i++)
+		_unsetenv(info, info->arguments[i]);
 
-// 	return (1);
-// }
+	return (1);
+}
 
-// /**
-//  * _unsetenv - Remove an environment variable
-//  * @info: Structure containing potential arguments. Used to maintain
-//  *        constant function prototype.
-//  *  Return: 1 on delete, 0 otherwise
-//  * @var: the string env var property
-//  */
-// int _unsetenv(g_data *info, char *var)
-// {
-// 	list_t *node = info->env;
-// 	size_t i = 0;
-// 	char *p;
+/**
+ * _unsetenv - Remove an environment variable
+ * @info: Structure containing potential arguments. Used to maintain
+ *        constant function prototype.
+ *  Return: 1 on delete, 0 otherwise
+ * @var: the string env var property
+ */
+int _unsetenv(g_data *info, char *var)
+{
+	// list_t *node = info->env;
+	size_t i = 0;
+	ssize_t p;
+    char **env_list;
 
-// 	if (!node || !var)
-// 		return (0);
+	if (!var)
+		return (0);
 
-// 	while (node)
-// 	{
-// 		p = starts_with(node->str, var);
-// 		if (p && *p == '=')
-// 		{
-// 			info->env_changed = delete_node_at_index(&(info->env), i);
-// 			i = 0;
-// 			node = info->env;
-// 			continue;
-// 		}
-// 		node = node->next;
-// 		i++;
-// 	}
-// 	return (info->env_changed);
-// }
+	while (info->environ[i] != NULL)
+	{
+        env_list[i] = info->environ[i];
 
-// /**
-//  * _setenv - Initialize a new environment variable,
-//  *             or modify an existing one
-//  * @info: Structure containing potential arguments. Used to maintain
-//  *        constant function prototype.
-//  * @var: the string env var property
-//  * @value: the string env var value
-//  *  Return: Always 0
-//  */
-// // int _setenv(info_t *info, char *var, char *value)
-// {
-// 	char *buf = NULL;
-// 	list_t *node;
-// 	char *p;
+		p = _strncmp(info->environ[i], var, _strlen(var));
+		if (p)
+		{
+			continue;
+		}
+		i++;
+	}
+    env_list[i] = NULL;
 
-// 	if (!var || !value)
-// 		return (0);
+    i = 0;
+    while (env_list[i] != NULL)
+	{
+        info->environ[i] = env_list[i];
+		i++;
+	}
 
-// 	buf = malloc(_strlen(var) + _strlen(value) + 2);
-// 	if (!buf)
-// 		return (1);
-// 	_strcpy(buf, var);
-// 	_strcat(buf, "=");
-// 	_strcat(buf, value);
-// 	node = info->env;
-// 	while (node)
-// 	{
-// 		p = starts_with(node->str, var);
-// 		if (p && *p == '=')
-// 		{
-// 			free(node->str);
-// 			node->str = buf;
-// 			info->env_changed = 1;
-// 			return (0);
-// 		}
-// 		node = node->next;
-// 	}
-// 	add_node_end(&(info->env), buf, 0);
-// 	free(buf);
-// 	info->env_changed = 1;
-// 	return (0);
-// }
+	return (1);
+}
+
 
 int _setenv(const char *n, const char *val, int w)
     {
@@ -125,19 +91,13 @@ int _setenv(const char *n, const char *val, int w)
         return (-1);
     }
 
-    if (!w && getenv(n) != NULL)
-     {
-         return (0);
-     }
-
-     bufferLen= nlen + vallen + 2;
+    bufferLen= nlen + vallen + 2;
     buffer = (char *) malloc(bufferLen);
 
     if (buffer == NULL)
     {
         return (-1);
     }
-
     strcpy(buffer, n);
     strcat(buffer, "=");
     strcat(buffer, val);
@@ -160,7 +120,7 @@ int _setenv(const char *n, const char *val, int w)
         env++;
     }
      free(buffer);
-    return (0);
+    return (1);
 }
 
 int _existadd(char **env, char *buffer)
@@ -184,6 +144,6 @@ int _existadd(char **env, char *buffer)
         free(n);
         }
 
-       return (0);
+       return (1);
 }
 

@@ -48,3 +48,18 @@ char *_getenv(const char *name, char **_environ)
 
 	return (ptr + found);
 }
+
+
+int _envp(__attribute__((unused)) g_data *info)
+{
+
+	char **env = environ;
+
+	while (*env)
+	{
+		write(STDOUT_FILENO, *env, _strlen(*env));
+		write(STDOUT_FILENO, "\n", 1);
+		env++;
+	}
+	return (0);
+}

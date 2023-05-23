@@ -1,6 +1,6 @@
 #include "main.h"
 
-char **init_g_data(g_data *info, char **av, char **env)
+char **init_g_data(g_data *info, char **av, char **env, int c)
 {
     int idx;
 
@@ -9,6 +9,7 @@ char **init_g_data(g_data *info, char **av, char **env)
     info->number_of_args = 0;
     info->counter = 1;
     info->readfd = 0;
+    info->argc = c;
     info->alias_db = NULL;
     // info->alias_db->next = NULL;
     // info->command = malloc(sizeof(1024));;
@@ -47,30 +48,30 @@ void semi_colon_hanler(char *input, char *tokens, char **fcommand)
     {
         command[idx] = tokens;
 
-        tokens = strtok(NULL,  " \t\n\r\a");
+        tokens = _sttrtok(NULL,  " \t\n\r\a");
         idx++;
     }
     command[idx] = ";";
     command[idx + 1] = NULL;
 
    g_cmd = malloc(sizeof(char *) *idx + 10);
-   strcpy(g_cmd, "\"");
+   _strcpy(g_cmd, "\"");
 
     int j=0, m=0;
     while (command[j] != NULL)
     {
 
-         if ( strcmp(command[j], ";") == 0)
+         if ( _strcmp(command[j], ";") == 0)
             {
-                strcat(g_cmd, "\"");
-                fcommand[m] = strdup(g_cmd);
+                _strcat(g_cmd, "\"");
+                fcommand[m] = _strdup(g_cmd);
                 m++;
-                strcpy(g_cmd, "\"");
+                _strcpy(g_cmd, "\"");
             }
             else 
             {
-                strcat(g_cmd, command[j]);
-                strcat(g_cmd, " ");
+                _strcat(g_cmd, command[j]);
+                _strcat(g_cmd, " ");
             }
             j++;
     }

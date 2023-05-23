@@ -15,7 +15,7 @@ int unalias_func(g_data *info)
             while (tmp != NULL)
             {
                 prev = tmp;
-                if (strcmp(info->arguments[idx], tmp->data) == 0)
+                if (_strcmp(info->arguments[idx], tmp->data) == 0)
                 {
                     prev->next = tmp->next;
                     // tmp = prev
@@ -46,14 +46,14 @@ int set_alias(g_data *info)
     while (idx <= info->number_of_args && info->arguments[idx] != NULL)
     {
      
-        if (contains_quotes(strdup(info->arguments[idx])))
+        if (contains_quotes(_strdup(info->arguments[idx])))
         {
            token_copier(info, &token, &idx);
         }
         else
         {
             if (is_valid_alias(info, info->arguments[idx]))
-                token =  strtok(info->arguments[idx], "=");
+                token =  _sttrtok(info->arguments[idx], "=");
             else
             {
                 idx++;
@@ -66,7 +66,7 @@ int set_alias(g_data *info)
         {
             ensure_full_alias[excess_count] = token;
             excess_count++;
-            token= strtok(NULL, " \t\n");
+            token= _sttrtok(NULL, " \t\n");
         }
         ensure_full_alias[excess_count] = NULL;
         ptr = ensure_full_alias;
@@ -91,23 +91,23 @@ void process_alias(g_data *info, char ***aliases, int *excess_count)
         cmd = temp;
         for (j= 0; j < *excess_count - 1; j++)
         {
-            alias = strdup((*aliases)[j]);
+            alias = _strdup((*aliases)[j]);
             j++;
-            if (strlen((*aliases)[j]) > 0 && contains_quotes((*aliases)[j]))
+            if (_strlen((*aliases)[j]) > 0 && contains_quotes((*aliases)[j]))
             {
-                strcpy(cmd, strdup((*aliases)[j]));
+                _strcpy(cmd, _strdup((*aliases)[j]));
                 j++;
                 while(j < *excess_count)
                 {
-                    strcat(cmd, " ");
-                    strcat(cmd, strdup((*aliases)[j]));
+                    _strcat(cmd, " ");
+                    _strcat(cmd, _strdup((*aliases)[j]));
                     j++;
                 }
                 cmd = surround_with_quotes(sanitize_string2(cmd));
             }
             else
             {
-                cmd = strlen((*aliases)[j]) > 0 ? surround_with_quotes(strdup((*aliases)[j])) 
+                cmd = _strlen((*aliases)[j]) > 0 ? surround_with_quotes(_strdup((*aliases)[j])) 
                 : NULL;
             }
         }
@@ -124,7 +124,7 @@ int free_alias(const char *str)
 {
     char *temp, ptr;
     int result;
-    temp = strchr(str, '=');
+    temp = _strchr(str, '=');
 
     if(!temp)
         return (1);
@@ -136,8 +136,8 @@ int free_alias(const char *str)
     return (result);
 }
 
-char* surround_with_quotes(const char* str) {
-    size_t len = strlen(str);
+char* surround_with_quotes(char* str) {
+    size_t len = _strlen(str);
     char* quoted_str = malloc(len + 3); // Allocate memory for the quoted string
 
     if (quoted_str == NULL) {
@@ -149,7 +149,7 @@ char* surround_with_quotes(const char* str) {
     quoted_str[0] = '\'';
     
     // Copy the original string
-    strncpy(quoted_str + 1, str, len);
+    _strncpy(quoted_str + 1, str, len);
 
     // Add the closing quote
     quoted_str[len + 1] = '\'';
@@ -159,14 +159,14 @@ char* surround_with_quotes(const char* str) {
 }
 
 int contains_quotes(const char* str) {
-    return (strchr(str, '\"') != NULL) || (strchr(str, '\'') != NULL);
+    return (_strchr(str, '\"') != NULL) || (_strchr(str, '\'') != NULL);
 }
 
 int is_valid_alias(g_data *info, char *s)
 {
     char *arg_check;
 
-    arg_check = strchr(s, '=');
+    arg_check = _strchr(s, '=');
     if (!arg_check)
     {
         error_handler(info, 127);
@@ -183,7 +183,7 @@ l_node *find_alias(g_data *info, int idx)
         tmp = info->alias_db;
         while (tmp != NULL)
         {
-            if (strcmp(info->arguments[idx], tmp->data) == 0)
+            if (_strcmp(info->arguments[idx], tmp->data) == 0)
             {
                 return tmp;
             }
@@ -202,7 +202,7 @@ void perform_alias_insert(g_data *info, char **data, char **sd)
         {
             while (tmp != NULL)
             {
-                if (strcmp(*data, tmp->data) == 0)
+                if (_strcmp(*data, tmp->data) == 0)
                 {
                         tmp->data = *data;
                         tmp->sub_data = *sd ? *sd : "'\'\'";
@@ -210,7 +210,7 @@ void perform_alias_insert(g_data *info, char **data, char **sd)
                 }
                 else if(tmp->next == NULL)
                 {                    
-                    insert_at_end(&(info->alias_db), strdup(*data), strdup(*sd));
+                    insert_at_end(&(info->alias_db), _strdup(*data), _strdup(*sd));
                 }
                
                 tmp = tmp->next;
@@ -218,7 +218,7 @@ void perform_alias_insert(g_data *info, char **data, char **sd)
         }
         else
         {
-            insert_at_end(&(info->alias_db), strdup(*data), strdup(*sd));
+            insert_at_end(&(info->alias_db), _strdup(*data), _strdup(*sd));
         }
 
         // free(*data);
@@ -235,19 +235,19 @@ int token_copier(g_data *info, char **token, int *idx)
         free(token_copy);
         return (0);
     }
-    strcpy(token_copy, info->arguments[*idx]);
+    _strcpy(token_copy, info->arguments[*idx]);
     (*idx)++;
     while (info->arguments[*idx] != NULL) 
     {
-        strcat(token_copy, " ");
-        strcat(token_copy, info->arguments[*idx]);
+        _strcat(token_copy, " ");
+        _strcat(token_copy, info->arguments[*idx]);
 
-        if((strchr(info->arguments[*idx], '\'')) || (strchr(info->arguments[*idx], '\"')))
+        if((_strchr(info->arguments[*idx], '\'')) || (_strchr(info->arguments[*idx], '\"')))
             break;
 
            (*idx)++;
     }
-    *token = strtok(token_copy, "=");
+    *token = _sttrtok(token_copy, "=");
     free(token_copy);
 
     return (*idx);

@@ -6,7 +6,7 @@
  * Return: Always a node
  */
 
- void insert_at_end(l_node **head, const char *str, const char *sub_data)
+ void insert_at_end(l_node **head, char *str, char *sub_data)
 {
 	l_node *temp, *new, *prev;
 
@@ -19,8 +19,8 @@
 		free(new);
 		return;
 	}
-	new->data = strdup(str);
-	new->sub_data = sub_data ? strdup(sub_data) : "\'\'";
+	new->data = _strdup(str);
+	new->sub_data = sub_data ? _strdup(sub_data) : "\'\'";
 	new->next = NULL;
 
 	if (!new->data)

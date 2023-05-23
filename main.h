@@ -45,6 +45,7 @@ typedef struct global_data {
     int counter;
     char *file;
     int readfd;
+    int argc;
 } g_data;
 
 typedef struct builtins {
@@ -74,11 +75,9 @@ int alias_func(g_data *info);
 int help_func(g_data *info);
 int unalias_func(g_data *info);
 int builtin_setenv(const char *a, const char *e);
-int _envp(void);
-
 
 // misc.d
-char **init_g_data(g_data *info, char **av, char **env);
+char **init_g_data(g_data *info, char **av, char **env, int c);
 void free_all(g_data *);
 ssize_t is_shell_interactive();
 int parseline(const char *cmdline, char **argv);
@@ -92,7 +91,7 @@ int _strlen(char *s);
 void _memcpy(void *dest, const void *src, unsigned int n);
 char* sanitize_string(char* str);
 char* sanitize_string2(char *str);
-char* surround_with_quotes(const char* str);
+char* surround_with_quotes(char* str);
 int contains_quotes(const char* str);
 
 // aliases.c
@@ -104,7 +103,7 @@ void process_alias(g_data *info, char ***k, int *excess_count);
 int token_copier(g_data *info, char **token, int *i);
 
 // add_node.c
-void insert_at_end(l_node **head, const char *str, const char *sub_data);
+void insert_at_end(l_node **head, char *str, char *sub_data);
 
 // linkedlist.c
 void print_list(struct node *head);
@@ -118,7 +117,7 @@ void _eputs(const char *s);
 void _print_one_line(const char *s);
 
 // parser.c
-char *find_command_path(const char * command);
+char *find_command_path(g_data *info, const char * command);
 
 // main
 char *sh_read_line(g_data *info);
@@ -128,6 +127,10 @@ ssize_t handle_builtins(g_data *info);
 //setenv
 int _existadd(char **env, char *buffer);
 int _setenv(const char *n, const char *val, int w);
+int _envp(g_data *info);
+int _envp(__attribute__((unused)) g_data *info);
+int setenv_func(g_data *info);
+
 // strings_helper_ext.c
 int _strcmp(const char *s, const char *t);
 char *_strcpy(char *dest, char *src);
@@ -164,6 +167,8 @@ void _eprint_one_line(const char *s);
 // string_helpers_aux.c
 char *_strcspn(char *str);
 int _atoi(const char *src);
+char *_strchr(const char *r, char c);
+char *_strncpy(char *dest, char *src, int n);
 
 // 
 int process_non_interactive_commands(g_data *info);

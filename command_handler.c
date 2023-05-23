@@ -102,7 +102,7 @@ int is_cmd(char *path)
 int path_finder(g_data *info)
 {
     int ret = 0;
-    char *commandPath = find_command_path(info->command);
+    char *commandPath = find_command_path(info, info->command);
 
             if (commandPath != NULL) {
                 // printf("Command path: %s\n", commandPath);

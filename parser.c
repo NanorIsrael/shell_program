@@ -9,39 +9,39 @@ void parseCommand(g_data *info)
     l_node *alias;
     info->number_of_args = 0;
  
-        if (strchr(quote, info->command[0]))
+        if (_strchr(quote, info->command[0]))
         {
             alias = find_alias(info, 0);
             if(alias)
-                strcpy(info->command, alias->sub_data);
+                _strcpy(info->command, alias->sub_data);
             
             rest = sanitize_string2(info->command);
-            token = strtok(rest, delim);
+            token = _sttrtok(rest, delim);
         }
         else
         {
             alias = find_alias(info, 0);
 
             if(alias)
-                strcpy(info->command, sanitize_string2(alias->sub_data));
+                _strcpy(info->command, sanitize_string2(alias->sub_data));
             
             rest = info->command;
-            token = strtok(rest, delim);
+            token = _sttrtok(rest, delim);
         }
 
     while (token != NULL)
     {
         info->arguments[argIndex] = token;
-        token = strtok(NULL, delim);
+        token = _sttrtok(NULL, delim);
         argIndex++;
         info->number_of_args++;
     }
     info->arguments[argIndex] = NULL; 
 }
 
-char* find_command_path(const char * command) 
+char* find_command_path(g_data *info, const char * command) 
 {
-    char* pathEnv = getenv("PATH"); // Get the value of the PATH environment variable
+    char* pathEnv = _getenv("PATH", info->environ); // Get the value of the PATH environment variable
 
     // Make a copy of pathEnv since strtok modifies the original string
     char* pathEnvCopy = strdup(pathEnv);

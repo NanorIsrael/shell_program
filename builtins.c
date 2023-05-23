@@ -73,7 +73,7 @@ int alias_func(g_data *info)
 
     if (info->arguments[1])
     {
-        alias = strchr(info->arguments[1], '=');
+        alias = _strchr(info->arguments[1], '=');
         if (!alias)
         {
                 while (info->arguments[idx] != NULL)
@@ -142,17 +142,4 @@ int builtin_setenv(const char *a, const char *e)
     }
 
     return (0);
-}
-
-int _envp(void)
-{
-	char **env = environ;
-
-	while (*env)
-	{
-		write(STDOUT_FILENO, *env, _strlen(*env));
-		write(STDOUT_FILENO, "\n", 1);
-		env++;
-	}
-	return (0);
 }

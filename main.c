@@ -4,7 +4,7 @@ int main(int c, char **av, char **env)
 {
     g_data info;
 
-    init_g_data(&info, av, env);
+    init_g_data(&info, av, env, c);
 
     cmd_handler(&info, c);
     
@@ -12,36 +12,6 @@ int main(int c, char **av, char **env)
     // printf("Continuing my normal execution flow\n");
     // free_all(&info);
     // atexit(report_mem_leak);
-}
-
-ssize_t handle_builtins(g_data *info)
-{
-    int idx, result = -1;
-    csh_builtin cbuiltins[] = {
-        {"exit", exit_func},
-        {"cd", cd_func},
-        {"alias", alias_func},
-        {"unalias", unalias_func},
-        {"help", help_func},
-        {NULL, NULL}
-    };
-
-    if (info->arguments[0])
-    {
-        for (idx = 0; cbuiltins[idx].name; idx++)
-        {
-            if (_strcmp(cbuiltins[idx].name, info->arguments[0]) == 0)
-            {
-                if (_strcmp(cbuiltins[idx].name, info->arguments[0]) == 0)
-                {
-                    // todo some counter
-                    result = cbuiltins[idx].handler(info);
-                    break;
-                }
-            }
-        }
-    } 
-    return (result);
 }
 
 
